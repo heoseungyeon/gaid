@@ -80,7 +80,7 @@ public abstract class CameraActivity extends Activity
   private Runnable imageConverter;
 
   private VideoView mVideoview;
-  private TextToSpeech textToSpeech;
+  protected TextToSpeech textToSpeech;
   final int PERMISSION = 1;
   Intent intent;
   SpeechRecognizer mRecognizer;

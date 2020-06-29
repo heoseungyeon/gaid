@@ -352,6 +352,18 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                   getApplicationContext(), "사람이당", Toast.LENGTH_SHORT);
                   toast.show();
                 }
+                //
+                else if(result.getTitle().equals("laptop")) {
+                  System.out.println("사람이당");
+                  speakOut("안녕하세요 노트북이넹");
+                  Toast toast =
+                          Toast.makeText(
+                                  getApplicationContext(), "사람이당", Toast.LENGTH_SHORT);
+                  toast.show();
+                }
+                //
+
+
                 LOGGER.i("HJY TEST : " + result.getId() + " // " + result.getTitle() + " // " + result.getConfidence() + " // " + result.getLocation() + " // ");
                 cropToFrameTransform.mapRect(location);
                 result.setLocation(location);
