@@ -40,6 +40,7 @@ import android.os.HandlerThread;
 import android.os.Trace;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.util.Size;
 import android.view.KeyEvent;
 import android.view.Surface;
@@ -54,7 +55,7 @@ import com.example.gaid.env.Logger;
 import java.nio.ByteBuffer;
 
 public abstract class CameraActivity extends Activity
-    implements OnImageAvailableListener, Camera.PreviewCallback {
+    implements OnImageAvailableListener, Camera.PreviewCallback, TextToSpeech.OnInitListener{
   private static final Logger LOGGER = new Logger();
 
   private static final int PERMISSIONS_REQUEST = 1;
@@ -84,6 +85,8 @@ public abstract class CameraActivity extends Activity
   Intent intent;
   SpeechRecognizer mRecognizer;
 
+
+
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     LOGGER.d("onCreate " + this);
@@ -93,6 +96,8 @@ public abstract class CameraActivity extends Activity
     setContentView(R.layout.activity_main);
     mVideoview = (VideoView) findViewById(R.id.vv_main);
 
+    //tts
+    textToSpeech = new TextToSpeech(this, this);
 
     //play video
     Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.backvideo);
@@ -110,6 +115,18 @@ public abstract class CameraActivity extends Activity
       setFragment();
     } else {
       requestPermission();
+    }
+  }
+
+  void speakOut(String text) {
+    textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    boolean speakingEnd = textToSpeech.isSpeaking();
+    Log.d("TTS", "SPOKE");
+    do{
+      speakingEnd = textToSpeech.isSpeaking();
+    } while (speakingEnd);
+    Log.d("done","spoke Done");
+    if(text.equals("안녕하세요 대양AI센터 입니다 무엇을 도와드릴까요?")){
     }
   }
 

@@ -1,89 +1,56 @@
 package com.example.gaid;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
 import android.app.Activity;
-
 import android.content.Intent;
-
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
-import com.example.gaid.data.LocationWeatherRepository;
-import com.example.gaid.data.WeatherRepository;
-import com.example.gaid.model.Weather;
-import com.example.gaid.weather.WeatherContract;
-import com.example.gaid.weather.WeatherPresenter;
+import com.airbnb.lottie.LottieAnimationView;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class MainActivity extends Activity implements TextToSpeech.OnInitListener, WeatherContract.View {
-
-    private TextView tv_temperature;
-    private TextView tv_weather;
-    private WeatherRepository mRepository;
-    private WeatherPresenter mPresenter;
-
-    private VideoView mVideoview;
+public class SoundActivity extends Activity implements TextToSpeech.OnInitListener{
     private TextToSpeech textToSpeech;
+    private LottieAnimationView animationView;
+    private TextView sttResultTextView;
     final int PERMISSION = 1;
     Intent intent;
     SpeechRecognizer mRecognizer;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mVideoview = (VideoView) findViewById(R.id.vv_main);
-
-
-        //play video
-        Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.backvideo);
-        mVideoview.setVideoURI(uri);
-        mVideoview.start();
-        //loop
-        mVideoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.setLooping(true);
-                mp.setVolume(0,0);
-            }
-        });
-        if ( Build.VERSION.SDK_INT >= 23 ){
-            // 퍼미션 체크
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET,
-                    Manifest.permission.RECORD_AUDIO},PERMISSION);
-        }
+        setContentView(R.layout.activity_sound);
         init();
-
-        //Intent intent=new Intent(getApplicationContext(),DetectorActivity.class);
-        //startActivity(intent);
-
-        mVideoview.setOnClickListener(new View.OnClickListener() {
+        //Lottie Animation
+        animationView = (LottieAnimationView) findViewById(R.id.animation_view);
+        animationView.setAnimation("listen.json");
+        animationView.loop(true);
+        animationView.setOnClickListener(new Button.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SoundActivity.class);
-                startActivity(intent);
+            public void onClick(View view) {
+                animationView.playAnimation();
+                mRecognizer.startListening(intent);
             }
         });
+        //Lottie Animation start
+        animationView.playAnimation();
     }
+
     public void init()
     {
+
+        sttResultTextView = findViewById(R.id.sttResult);
         textToSpeech = new TextToSpeech(this, this);
 
         intent=new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -91,12 +58,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
         mRecognizer= SpeechRecognizer.createSpeechRecognizer(this);
         mRecognizer.setRecognitionListener(listener);
-
-        tv_weather = findViewById(R.id.tv_weatherSummary);
-        tv_temperature = findViewById(R.id.tv_weatherTemperature);
-        mRepository = new LocationWeatherRepository();
-        mPresenter = new WeatherPresenter(mRepository, this);
-        mPresenter.loadWeatherData();
     }
     private void speakOut(String text) {
         textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
@@ -181,10 +142,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             String text = "";
             ArrayList<String> matches =
                     results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            for (int i = 0; i < matches.size(); i++) {
-                text += matches.get(i);
+            animationView.cancelAnimation();
+            for(int i = 0; i < matches.size() ; i++){
+                sttResultTextView.setText(matches.get(i));
             }
 
+            text=sttResultTextView.getText().toString();
             if (text.contains("길")||text.contains("어떻게 가")||text.contains("어디에 있어")) {
                 speakOut("길찾기기능을 찾으셨군요");
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
@@ -215,7 +178,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
 
 
-        @Override
+    @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
 
@@ -236,52 +199,4 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             Log.e("TTS", "Initilization Failed");
         }
     }
-
-    @Override
-    public void showWeatherData(Weather weather) {
-        try {
-            double temperature = weather.getCurrently().getTemperature();
-            temperature = (int)((temperature - 32) / 1.8);
-            String weatherType = weatherType(weather);
-            tv_weather.setText(weatherType);
-            tv_temperature.setText(Double.toString(temperature));
-
-        }
-        catch (Exception e) {
-            tv_weather.setText("일일 허용량 초과");
-            tv_temperature.setText("일일 허용량 초과");
-        }
-    }
-
-    @Override
-    public void showLoadError(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-    }
-
-    public String weatherType(Weather weather) {
-        String weatherSummary = weather.getCurrently().getSummary();
-        if (weatherSummary.contains("Overcast")) {
-            weatherSummary = "  흐림  ";
-        }
-        return weatherSummary;
-    }
-
-    protected void onRestart() {
-            super.onRestart();
-            mVideoview = (VideoView) findViewById(R.id.vv_main);
-
-            //play video
-            Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.backvideo);
-            mVideoview.setVideoURI(uri);
-            mVideoview.start();
-            //loop
-            mVideoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    mp.setLooping(true);
-                    mp.setVolume(0, 0);
-                }
-            });
-        }
 }
-

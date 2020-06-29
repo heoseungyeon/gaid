@@ -27,6 +27,8 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
 import android.os.SystemClock;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Toast;
@@ -40,6 +42,7 @@ import com.example.gaid.tracking.MultiBoxTracker;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 /**
@@ -75,6 +78,28 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private static final String YOLO_INPUT_NAME = "input";
   private static final String YOLO_OUTPUT_NAMES = "output";
   private static final int YOLO_BLOCK_SIZE = 32;
+
+  @Override
+  public void onInit(int status) {
+    if (status == TextToSpeech.SUCCESS) {
+
+      int result = textToSpeech.setLanguage(Locale.KOREA);
+
+
+      // tts.setPitch(5); // set pitch level
+
+      // tts.setSpeechRate(2); // set speech speed rate
+
+      if (result == TextToSpeech.LANG_MISSING_DATA
+              || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+        Log.e("TTS", "Language is not supported");
+      } else {
+      }
+
+    } else {
+      Log.e("TTS", "Initilization Failed");
+    }
+  }
 
   // Which detection model to use: by default uses Tensorflow Object Detection API frozen
   // checkpoints.  Optionally use legacy Multibox (trained using an older version of the API)
@@ -117,6 +142,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private byte[] luminanceCopy;
 
   private BorderedText borderedText;
+
+
+
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
     final float textSizePx =
@@ -318,6 +346,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 System.out.println("result.getTitle():"+result.getTitle());
                 if(result.getTitle().equals("person")) {
                   System.out.println("사람이당");
+                  speakOut("안녕하세요 사람이네요");
                   Toast toast =
                           Toast.makeText(
                                   getApplicationContext(), "사람이당", Toast.LENGTH_SHORT);
