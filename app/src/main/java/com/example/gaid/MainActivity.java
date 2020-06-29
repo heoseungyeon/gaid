@@ -74,7 +74,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private void speakOut(String text) {
         textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         Log.d("TTS", "SPOKE");
-        //mRecognizer.startListening(intent);
+        mRecognizer.startListening(intent);
 
     }
 
@@ -150,7 +150,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             for (int i = 0; i < matches.size(); i++) {
                 text += matches.get(i);
             }
-            if (text.contains("길찾기")) {
+            if (text.contains("길")||text.contains("어떻게 가")||text.contains("어디에 있어")) {
                 speakOut("길찾기기능을 찾으셨군요");
             } else if (text.contains("소개")) {
                 speakOut("소개 해달라구요?");
