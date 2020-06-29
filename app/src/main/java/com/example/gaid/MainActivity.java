@@ -213,4 +213,23 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             Log.e("TTS", "Initilization Failed");
         }
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mVideoview = (VideoView) findViewById(R.id.vv_main);
+
+        //play video
+        Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.backvideo);
+        mVideoview.setVideoURI(uri);
+        mVideoview.start();
+        //loop
+        mVideoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+                mp.setVolume(0,0);
+            }
+        });
+    }
 }
