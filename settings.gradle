@@ -1,0 +1,2 @@
+rootProject.name='gaid'
+include ':app'
