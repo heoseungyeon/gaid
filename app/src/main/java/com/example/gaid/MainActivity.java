@@ -16,7 +16,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mVideoview = (VideoView) findViewById(R.id.vv_main);
-        
+
         //play video
         Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.backvideo);
         mVideoview.setVideoURI(uri);
