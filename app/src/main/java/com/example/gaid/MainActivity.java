@@ -16,6 +16,7 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -74,7 +75,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private void speakOut(String text) {
         textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         Log.d("TTS", "SPOKE");
-        mRecognizer.startListening(intent);
 
     }
 
@@ -152,6 +152,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             }
             if (text.contains("길")||text.contains("어떻게 가")||text.contains("어디에 있어")) {
                 speakOut("길찾기기능을 찾으셨군요");
+                Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+                startActivity(intent);
             } else if (text.contains("소개")) {
                 speakOut("소개 해달라구요?");
             } else if (text.contains("사진")) {
@@ -178,6 +180,20 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
             int result = textToSpeech.setLanguage(Locale.KOREA);
 
+            textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                @Override
+                public void onDone(String utteranceId) {
+                    mRecognizer.startListening(intent);
+                }
+
+                @Override
+                public void onError(String utteranceId) {
+                }
+
+                @Override
+                public void onStart(String utteranceId) {
+                }
+            });
             // tts.setPitch(5); // set pitch level
 
             // tts.setSpeechRate(2); // set speech speed rate
