@@ -5,6 +5,7 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -36,6 +37,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             @Override
             public void onPrepared(MediaPlayer mp) {
                 mp.setLooping(true);
+                mp.setVolume(0,0);
             }
         });
         if ( Build.VERSION.SDK_INT >= 23 ){
