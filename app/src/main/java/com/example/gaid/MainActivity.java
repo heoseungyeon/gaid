@@ -31,6 +31,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     final int PERMISSION = 1;
     Intent intent;
     SpeechRecognizer mRecognizer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +67,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     public void init()
     {
         textToSpeech = new TextToSpeech(this, this);
+
         intent=new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,getPackageName());
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
@@ -74,8 +76,15 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     }
     private void speakOut(String text) {
         textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+        boolean speakingEnd = textToSpeech.isSpeaking();
         Log.d("TTS", "SPOKE");
-
+        do{
+            speakingEnd = textToSpeech.isSpeaking();
+        } while (speakingEnd);
+        Log.d("done","spoke Done");
+        if(text.equals("안녕하세요 대양AI센터 입니다 무엇을 도와드릴까요?")){
+            mRecognizer.startListening(intent);
+        }
     }
 
     private RecognitionListener listener = new RecognitionListener() {
@@ -144,12 +153,15 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         @Override
         public void onResults(Bundle results) {
             // 말을 하면 ArrayList에 단어를 넣고 textView에 단어를 이어줍니다.
+
             String text = "";
             ArrayList<String> matches =
                     results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             for (int i = 0; i < matches.size(); i++) {
                 text += matches.get(i);
             }
+            Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+
             if (text.contains("길찾기")) {
                 speakOut("길찾기기능을 찾으셨군요");
             } else if (text.contains("소개")) {
@@ -172,26 +184,15 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         }
     };
 
+
+
         @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
 
             int result = textToSpeech.setLanguage(Locale.KOREA);
 
-            textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
-                @Override
-                public void onDone(String utteranceId) {
-                    mRecognizer.startListening(intent);
-                }
 
-                @Override
-                public void onError(String utteranceId) {
-                }
-
-                @Override
-                public void onStart(String utteranceId) {
-                }
-            });
             // tts.setPitch(5); // set pitch level
 
             // tts.setSpeechRate(2); // set speech speed rate
