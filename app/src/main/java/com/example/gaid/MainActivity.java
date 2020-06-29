@@ -19,13 +19,26 @@ import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import com.example.gaid.data.LocationWeatherRepository;
+import com.example.gaid.data.WeatherRepository;
+import com.example.gaid.model.Weather;
+import com.example.gaid.weather.WeatherContract;
+import com.example.gaid.weather.WeatherPresenter;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class MainActivity extends Activity implements TextToSpeech.OnInitListener{
+public class MainActivity extends Activity implements TextToSpeech.OnInitListener, WeatherContract.View {
+
+    private TextView tv_temperature;
+    private TextView tv_weather;
+    private WeatherRepository mRepository;
+    private WeatherPresenter mPresenter;
+
     private VideoView mVideoview;
     private TextToSpeech textToSpeech;
     final int PERMISSION = 1;
@@ -71,6 +84,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
         mRecognizer= SpeechRecognizer.createSpeechRecognizer(this);
         mRecognizer.setRecognitionListener(listener);
+
+        tv_weather = findViewById(R.id.tv_weatherSummary);
+        tv_temperature = findViewById(R.id.tv_weatherTemperature);
+        mRepository = new LocationWeatherRepository();
+        mPresenter = new WeatherPresenter(mRepository, this);
+        mPresenter.loadWeatherData();
     }
     private void speakOut(String text) {
         textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
@@ -205,5 +224,34 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         } else {
             Log.e("TTS", "Initilization Failed");
         }
+    }
+
+    @Override
+    public void showWeatherData(Weather weather) {
+        try {
+            double temperature = weather.getCurrently().getTemperature();
+            temperature = (int)((temperature - 32) / 1.8);
+            String weatherType = weatherType(weather);
+            tv_weather.setText(weatherType);
+            tv_temperature.setText(Double.toString(temperature));
+
+        }
+        catch (Exception e) {
+            tv_weather.setText("일일 허용량 초과");
+            tv_temperature.setText("일일 허용량 초과");
+        }
+    }
+
+    @Override
+    public void showLoadError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    public String weatherType(Weather weather) {
+            String weatherSummary = weather.getCurrently().getSummary();
+            if(weatherSummary.contains("Overcast")) {
+                weatherSummary = "  흐림  ";
+            }
+            return weatherSummary;
     }
 }
