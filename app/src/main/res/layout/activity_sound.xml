@@ -3,6 +3,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".SoundActivity">
 
+    <ImageView
+        android:id="@+id/img_voice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_record_voice_over_black_24dp"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/example1"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="ex) 센터 전체 소개해줘"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_voice"
+        />
+    <TextView
+        android:id="@+id/example2"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="ex) 414호가 어디야?"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/example1"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

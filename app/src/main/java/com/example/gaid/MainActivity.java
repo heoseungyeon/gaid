@@ -169,6 +169,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 speakOut("소개 해달라구요?");
             } else if (text.contains("사진")) {
                 speakOut("기념사진찍어드릴게요");
+            }else if (text.contains("대양아")) {
+                speakOut("대양이를 불르셨어요?");
+                Intent intent = new Intent(getApplicationContext(), SoundActivity.class);
+                startActivity(intent);
             } else {
                 speakOut("제대로 좀 말해주세요 ㅋ");
             }
