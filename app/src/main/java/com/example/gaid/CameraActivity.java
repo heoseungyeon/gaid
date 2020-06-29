@@ -354,6 +354,7 @@ public abstract class CameraActivity extends Activity
           continue;
         }
 
+
         final StreamConfigurationMap map =
             characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
 
