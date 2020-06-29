@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class MainActivity extends Activity implements TextToSpeech.OnInitListener{
+
     private VideoView mVideoview;
     private TextToSpeech textToSpeech;
     final int PERMISSION = 1;
@@ -36,6 +37,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mVideoview = (VideoView) findViewById(R.id.vv_main);
+
 
         //play video
         Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.backvideo);
@@ -55,6 +57,9 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                     Manifest.permission.RECORD_AUDIO},PERMISSION);
         }
         init();
+
+        //Intent intent=new Intent(getApplicationContext(),DetectorActivity.class);
+        //startActivity(intent);
 
         mVideoview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,4 +211,5 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             Log.e("TTS", "Initilization Failed");
         }
     }
+
 }

@@ -315,6 +315,14 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
               final RectF location = result.getLocation();
               if (location != null && result.getConfidence() >= minimumConfidence) {
                 canvas.drawRect(location, paint);
+                System.out.println("result.getTitle():"+result.getTitle());
+                if(result.getTitle().equals("person")) {
+                  System.out.println("사람이당");
+                  Toast toast =
+                          Toast.makeText(
+                                  getApplicationContext(), "사람이당", Toast.LENGTH_SHORT);
+                  toast.show();
+                }
                 LOGGER.i("HJY TEST : " + result.getId() + " // " + result.getTitle() + " // " + result.getConfidence() + " // " + result.getLocation() + " // ");
                 cropToFrameTransform.mapRect(location);
                 result.setLocation(location);

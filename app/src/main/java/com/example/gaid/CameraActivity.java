@@ -20,6 +20,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
@@ -30,16 +31,21 @@ import android.media.Image;
 import android.media.Image.Plane;
 import android.media.ImageReader;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Trace;
+import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.util.Size;
 import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.WindowManager;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.example.gaid.env.ImageUtils;
 import com.example.gaid.env.Logger;
@@ -72,14 +78,34 @@ public abstract class CameraActivity extends Activity
   private Runnable postInferenceCallback;
   private Runnable imageConverter;
 
+  private VideoView mVideoview;
+  private TextToSpeech textToSpeech;
+  final int PERMISSION = 1;
+  Intent intent;
+  SpeechRecognizer mRecognizer;
+
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     LOGGER.d("onCreate " + this);
     super.onCreate(null);
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-    setContentView(R.layout.activity_camera);
+    setContentView(R.layout.activity_main);
+    mVideoview = (VideoView) findViewById(R.id.vv_main);
 
+
+    //play video
+    Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.backvideo);
+    mVideoview.setVideoURI(uri);
+    mVideoview.start();
+    //loop
+    mVideoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+      @Override
+      public void onPrepared(MediaPlayer mp) {
+        mp.setLooping(true);
+        mp.setVolume(0,0);
+      }
+    });
     if (hasPermission()) {
       setFragment();
     } else {

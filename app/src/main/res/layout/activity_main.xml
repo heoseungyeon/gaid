@@ -47,6 +47,15 @@
         app:layout_constraintTop_toBottomOf="@id/tv_main"
         />
 
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/container"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:background="#000"
+        tools:context="com.example.gaid.CameraActivity"
+        tools:ignore="MissingConstraints" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
