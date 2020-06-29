@@ -2,9 +2,10 @@ package com.example.gaid;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 
-public class SoundActivity extends AppCompatActivity {
+public class SoundActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

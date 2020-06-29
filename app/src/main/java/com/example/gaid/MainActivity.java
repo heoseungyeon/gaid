@@ -60,7 +60,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         mVideoview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                speakOut("안녕하세요 대양AI센터 입니다 무엇을 도와드릴까요?");
+                Intent intent = new Intent(getApplicationContext(), SoundActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -169,7 +170,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 speakOut("소개 해달라구요?");
             } else if (text.contains("사진")) {
                 speakOut("기념사진찍어드릴게요");
-            }else if (text.contains("대양아")) {
+            }else if (text.contains("대양")) {
                 speakOut("대양이를 불르셨어요?");
                 Intent intent = new Intent(getApplicationContext(), SoundActivity.class);
                 startActivity(intent);
