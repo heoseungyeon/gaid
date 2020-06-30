@@ -44,6 +44,7 @@ import android.util.Log;
 import android.util.Size;
 import android.view.KeyEvent;
 import android.view.Surface;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -109,6 +110,14 @@ public abstract class CameraActivity extends Activity
       public void onPrepared(MediaPlayer mp) {
         mp.setLooping(true);
         mp.setVolume(0,0);
+      }
+    });
+
+    mVideoview.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(getApplicationContext(), SoundActivity.class);
+        startActivity(intent);
       }
     });
     if (hasPermission()) {
