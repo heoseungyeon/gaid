@@ -49,10 +49,12 @@ public class PhotoActivity extends Activity {
 //        byte[] arr=getIntent().getByteArrayExtra("image");
 //        image= BitmapFactory.decodeByteArray(arr,0,arr.length);
 //        photoView.setImageBitmap(image);
+
         if (getIntent() != null) {
             try {
                 image = BitmapFactory.decodeStream(openFileInput(getIntent().getStringExtra("key")));
                 photoView.setImageBitmap(image);
+//형걸이형 여기야 여기!!
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
