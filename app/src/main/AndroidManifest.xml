@@ -23,7 +23,9 @@
         <activity android:name=".PhotoActivity"
             android:screenOrientation="landscape"
             />
-        <activity android:name=".DetectorActivity">
+        <activity android:name=".DetectorActivity"
+            android:screenOrientation="landscape"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
