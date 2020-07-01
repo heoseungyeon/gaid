@@ -81,7 +81,7 @@ public class PhotoActivity extends Activity implements PictureContract.View {
             mSendPictureRepository = new SendPictureRepository(image2);
             mPicturePresenter = new PicturePresenter(mSendPictureRepository, this);
             mPicturePresenter.sendPictureDataToServer(image2);
-
+            
         }
     }
 
