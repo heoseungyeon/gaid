@@ -39,7 +39,7 @@ public class PhotoActivity extends Activity implements PictureContract.View {
 
     private SendPictureRepository mSendPictureRepository;
     private PicturePresenter mPicturePresenter;
-
+    private int flag=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +50,7 @@ public class PhotoActivity extends Activity implements PictureContract.View {
         btn_qr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 generateQRCode("www.naver.com");
             }
         });
@@ -65,27 +66,20 @@ public class PhotoActivity extends Activity implements PictureContract.View {
 //        photoView.setImageBitmap(image);
 
         if (getIntent() != null) {
-            try {
-                image = BitmapFactory.decodeStream(openFileInput(getIntent().getStringExtra("key")));
-                photoView.setImageBitmap(image);
-//형걸이형 여기야 여기!!
-                ///ㅋㅋㅋㅋㅋㅋㅋㅋ 개웃기누
+            image = BitmapFactory.decodeFile(getIntent().getStringExtra("key"));
+            photoView.setImageBitmap(image);
+            //형걸이형 여기야 여기!!
+            ///ㅋㅋㅋㅋㅋㅋㅋㅋ 개웃기누 < ㅄ
 
-                String pictureFilePath = intent.getStringExtra("pictureFilePath");
-                File pictureFile = new File(pictureFilePath);
-                RequestBody imgFileReqBody = RequestBody.create(MediaType.parse("image/*"), pictureFile);
-                MultipartBody.Part image = MultipartBody.Part.createFormData("image", pictureFile.getName(), imgFileReqBody);
-                mSendPictureRepository = new SendPictureRepository(image);
-                mPicturePresenter = new PicturePresenter(mSendPictureRepository, this);
-                mPicturePresenter.sendPictureDataToServer(image);
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            String pictureFilePath = intent.getStringExtra("key");
+            File pictureFile = new File(pictureFilePath);
+            RequestBody imgFileReqBody = RequestBody.create(MediaType.parse("image/*"), pictureFile);
+            MultipartBody.Part image2 = MultipartBody.Part.createFormData("files", pictureFile.getName(), imgFileReqBody);
+            mSendPictureRepository = new SendPictureRepository(image2);
+            mPicturePresenter = new PicturePresenter(mSendPictureRepository, this);
+            mPicturePresenter.sendPictureDataToServer(image2);
 
         }
-
-
     }
 
     public void generateQRCode(String contents) {
@@ -115,10 +109,12 @@ public class PhotoActivity extends Activity implements PictureContract.View {
     @Override
     public void showServerResponse(SendPictureResponseDTO sendPictureResponseDTO) {
         Toast.makeText(this, sendPictureResponseDTO.getMsg(), Toast.LENGTH_LONG).show();
+        System.out.println(sendPictureResponseDTO.getMsg()+"anjdi");
     }
 
     @Override
     public void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        System.out.println(message+"dlgudrjf");
     }
 }

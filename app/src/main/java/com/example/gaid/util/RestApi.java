@@ -10,9 +10,9 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 
 public interface RestApi {
-    String BASE_URL = "http://localhost:8080/";
+    String BASE_URL = "http://172.16.16.136:8080/";
 
     @Multipart
-    @POST //여기다가 HTTP 통신 방식 넣어야 함.
-    Call<SendPictureResponseDTO> send_picture(@Part MultipartBody.Part image);
+    @POST("upload") //여기다가 HTTP 통신 방식 넣어야 함.
+    Call<SendPictureResponseDTO> send_picture(@Part MultipartBody.Part files);
 }
