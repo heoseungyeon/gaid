@@ -41,7 +41,7 @@ public class TakepictureActivity extends Activity {
     Button btn_shutter;
     ImageView iv_preview;
     boolean inProgress = false;
-
+    private String filename="";
 
     @Override
 
@@ -172,6 +172,7 @@ public class TakepictureActivity extends Activity {
                     System.out.println("ssook2");
                     try {
                         intent.putExtra("key", saveBitmap(bitmap));
+                        intent.putExtra("filename","n"+filename);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -199,9 +200,27 @@ public class TakepictureActivity extends Activity {
 //        bitmap.compress(Bitmap.CompressFormat.PNG, 0, filestream);
         String path = null;
         OutputStream out = null;
+
         try {
-            path = Environment.getExternalStorageDirectory() + "/Pictures/MyCameraApp/n" + System.currentTimeMillis() + ".jpg";
+            filename=System.currentTimeMillis()+".jpg";
+            path = Environment.getExternalStorageDirectory() + "/Pictures/MyCameraApp/n" + filename;
+
             out = new FileOutputStream(path);
+            if(out==null){
+                File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES), "MyCameraApp");
+                // This location works best if you want the created images to be shared
+                // between applications and persist after your app has been uninstalled.
+
+                // Create the storage directory if it does not exist
+                if (!mediaStorageDir.exists()) {
+                    if (!mediaStorageDir.mkdirs()) {
+                        Log.d("MyCameraApp", "failed to create directory");
+                        return null;
+                    }
+                }
+
+            }
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
         } catch (Exception e) {
             e.printStackTrace();

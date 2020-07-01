@@ -2,7 +2,7 @@ package com.example.gaid.model.send_picture;
 
 public class SendPictureResponseDTO {
 
-    String message;
+        String message;
 
     public String getMsg() {
         return message;

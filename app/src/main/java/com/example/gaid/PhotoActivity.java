@@ -36,7 +36,7 @@ public class PhotoActivity extends Activity implements PictureContract.View {
     private ImageView photoView;
     private Bitmap image;
     private Button btn_qr;
-
+    private String qr_url;
     private SendPictureRepository mSendPictureRepository;
     private PicturePresenter mPicturePresenter;
     private int flag=0;
@@ -50,8 +50,8 @@ public class PhotoActivity extends Activity implements PictureContract.View {
         btn_qr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                generateQRCode("www.naver.com");
+                System.out.println(qr_url+"Tlqk");
+                generateQRCode("http://172.16.16.136:8080/files/"+qr_url);
             }
         });
      /*   Intent intent = getIntent();
@@ -64,13 +64,16 @@ public class PhotoActivity extends Activity implements PictureContract.View {
 //        byte[] arr=getIntent().getByteArrayExtra("image");
 //        image= BitmapFactory.decodeByteArray(arr,0,arr.length);
 //        photoView.setImageBitmap(image);
-
+        qr_url=getIntent().getStringExtra("filename");
         if (getIntent() != null) {
             image = BitmapFactory.decodeFile(getIntent().getStringExtra("key"));
             photoView.setImageBitmap(image);
 
             String pictureFilePath = intent.getStringExtra("key");
             File pictureFile = new File(pictureFilePath);
+            Bitmap bitmap2 = BitmapFactory.decodeFile(getIntent().getStringExtra("key"));
+            photoView.setImageBitmap(image);
+
             RequestBody imgFileReqBody = RequestBody.create(MediaType.parse("image/*"), pictureFile);
             MultipartBody.Part image2 = MultipartBody.Part.createFormData("files", pictureFile.getName(), imgFileReqBody);
             mSendPictureRepository = new SendPictureRepository(image2);
