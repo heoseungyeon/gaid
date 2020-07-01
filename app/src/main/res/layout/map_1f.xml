@@ -94,4 +94,5 @@
             android:textColor="#1f4fff"
             android:textSize="50dp"
             android:textStyle="bold" />
+    </LinearLayout>
 </LinearLayout>
