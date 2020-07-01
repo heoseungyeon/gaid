@@ -71,8 +71,15 @@ class MyAdapter extends BaseAdapter {
                     tv.setText("E");
 
                 }
+                if(i==39){
+                    iv.setImageResource(R.drawable.current);
+                }
+
                 if (node[i].getKind().equals("W")) {
                     iv.setImageResource(R.drawable.black);
+                }
+                if(i==51){
+                    iv.setImageResource(R.drawable.enter);
                 }
             }
         }
