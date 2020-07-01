@@ -7,24 +7,38 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Picture;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.example.gaid.data.SendPictureRepository;
+import com.example.gaid.model.send_picture.SendPictureResponseDTO;
+import com.example.gaid.picture.PictureContract;
+import com.example.gaid.picture.PicturePresenter;
+import com.example.gaid.weather.WeatherPresenter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 import static com.google.zxing.BarcodeFormat.QR_CODE;
 
-public class PhotoActivity extends Activity {
+public class PhotoActivity extends Activity implements PictureContract.View {
     private ImageView photoView;
     private Bitmap image;
     private Button btn_qr;
 
+    private SendPictureRepository mSendPictureRepository;
+    private PicturePresenter mPicturePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +69,16 @@ public class PhotoActivity extends Activity {
                 image = BitmapFactory.decodeStream(openFileInput(getIntent().getStringExtra("key")));
                 photoView.setImageBitmap(image);
 //형걸이형 여기야 여기!!
+                ///ㅋㅋㅋㅋㅋㅋㅋㅋ 개웃기누
+
+                String pictureFilePath = intent.getStringExtra("pictureFilePath");
+                File pictureFile = new File(pictureFilePath);
+                RequestBody imgFileReqBody = RequestBody.create(MediaType.parse("image/*"), pictureFile);
+                MultipartBody.Part image = MultipartBody.Part.createFormData("image", pictureFile.getName(), imgFileReqBody);
+                mSendPictureRepository = new SendPictureRepository(image);
+                mPicturePresenter = new PicturePresenter(mSendPictureRepository, this);
+                mPicturePresenter.sendPictureDataToServer(image);
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -88,4 +112,13 @@ public class PhotoActivity extends Activity {
     }
 
 
+    @Override
+    public void showServerResponse(SendPictureResponseDTO sendPictureResponseDTO) {
+        Toast.makeText(this, sendPictureResponseDTO.getMsg(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
 }
