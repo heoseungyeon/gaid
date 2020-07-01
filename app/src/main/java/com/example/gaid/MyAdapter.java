@@ -51,7 +51,7 @@ class MyAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null)
             convertView = inf.inflate(layout, null);
-        convertView.setLayoutParams(new GridView.LayoutParams(200, 200));
+        convertView.setLayoutParams(new GridView.LayoutParams(160, 160));
 
         ImageView iv = (ImageView) convertView.findViewById(R.id.imageView1);
         TextView tv = (TextView) convertView.findViewById(R.id.textView1);
