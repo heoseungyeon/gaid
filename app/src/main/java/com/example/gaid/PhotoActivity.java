@@ -68,8 +68,6 @@ public class PhotoActivity extends Activity implements PictureContract.View {
         if (getIntent() != null) {
             image = BitmapFactory.decodeFile(getIntent().getStringExtra("key"));
             photoView.setImageBitmap(image);
-            //형걸이형 여기야 여기!!
-            ///ㅋㅋㅋㅋㅋㅋㅋㅋ 개웃기누 < ㅄ
 
             String pictureFilePath = intent.getStringExtra("key");
             File pictureFile = new File(pictureFilePath);
