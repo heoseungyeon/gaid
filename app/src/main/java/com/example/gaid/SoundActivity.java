@@ -213,6 +213,7 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
                         if(mCase == null) {
                             speakOut("정확하게 다시 한번 말해주세요");
                             mRecognizer.startListening(intent);
+                            animationView.playAnimation();
                         }
                         else if (mCase.contains("MapActivity")) { //길 찾기
                             speakOut("길찾기기능을 찾으셨군요");
