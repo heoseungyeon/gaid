@@ -19,7 +19,12 @@ import android.widget.Toast;
 import com.airbnb.lottie.LottieAnimationView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+
+import kr.co.shineware.nlp.komoran.core.Komoran;
+import kr.co.shineware.nlp.komoran.model.KomoranResult;
+import kr.co.shineware.nlp.komoran.model.Token;
 
 
 public class SoundActivity extends Activity implements TextToSpeech.OnInitListener{
@@ -30,6 +35,11 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
     final int PERMISSION = 1;
     Intent intent;
     SpeechRecognizer mRecognizer;
+
+    private String mCase;
+    //Komoran 형태소 분석기
+    private Komoran mKomoran;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,37 +162,83 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
         public void onResults(Bundle results) {
             // 말을 하면 ArrayList에 단어를 넣고 textView에 단어를 이어줍니다.
 
+            mKomoran = new Komoran("models_full");
+            mKomoran.setFWDic("user_data/fwd.user");
+            mKomoran.setUserDic("user_data/dic.user");
+
             String text = "";
             ArrayList<String> matches =
                     results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             animationView.cancelAnimation();
-            for(int i = 0; i < matches.size() ; i++){
-                sttResultTextView.setText(matches.get(i));
-            }
 
+//            for(int i = 0; i < matches.size() ; i++){
+//                sttResultTextView.setText(matches.get(i));
+//            }
+
+            sttResultTextView.setText(matches.get(0));
             text = sttResultTextView.getText().toString();
-            if (text.contains("길")||text.contains("어떻게 가")||text.contains("어디에 있어")) {
+
+            KomoranResult analyzeResultList = mKomoran.analyze(text);
+            //List<Token> tokenList = analyzeResultList.getTokenList();
+            mCase = checkCase(analyzeResultList.getMorphesByTags("VV", "NP", "NNG", "SN")); //NNB
+
+
+            if (mCase.contains("MapActivity")) {
                 speakOut("길찾기기능을 찾으셨군요");
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                 startActivity(intent);
+<<<<<<< HEAD
+            }
+            else if (text.contains("소개")) {
+                speakOut("소개 해달라구요?");
+
+            }
+            else if (mCase.contains("TakepictureActivity")) {
+=======
             } else if (text.contains("소개")||text.contains("소계")||text.contains("속의")) {
                 speakOut("소개 해달라구요?");
                 Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
                 startActivity(intent);
 
             } else if (text.contains("사진")) {
+>>>>>>> c2fbbb25dea3c83ee7c67cbef7574f326c204077
                 speakOut("기념사진찍어드릴게요");
                 Intent intent = new Intent(getApplicationContext(), TakepictureActivity.class);
                 startActivity(intent);
-            }else if (text.contains("대양")) {
+            }
+            else if (text.contains("대양")) {
                 speakOut("대양이를 불르셨어요?");
                 Intent intent = new Intent(getApplicationContext(), SoundActivity.class);
                 startActivity(intent);
+<<<<<<< HEAD
+=======
             } else {
                 speakOut("다시 한번 말해주세요");
                 mRecognizer.startListening(intent);
 
+>>>>>>> c2fbbb25dea3c83ee7c67cbef7574f326c204077
             }
+            else {
+                speakOut("다시 한번 말해주세요.");
+            }
+
+            //            if (text.contains("길")||text.contains("어떻게 가")||text.contains("어디에 있어")) {
+//                speakOut("길찾기기능을 찾으셨군요");
+//                Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+//                startActivity(intent);
+//            } else if (text.contains("소개")) {
+//                speakOut("소개 해달라구요?");
+//            } else if (text.contains("사진")) {
+//                speakOut("기념사진찍어드릴게요");
+//                Intent intent = new Intent(getApplicationContext(), TakepictureActivity.class);
+//                startActivity(intent);
+//            }else if (text.contains("대양")) {
+//                speakOut("대양이를 불르셨어요?");
+//                Intent intent = new Intent(getApplicationContext(), SoundActivity.class);
+//                startActivity(intent);
+//            } else {
+//                speakOut("다시 한번 말해주세요");
+//            }
         }
 
         @Override
@@ -195,8 +251,6 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
 
         }
     };
-
-
 
     @Override
     public void onInit(int status) {
@@ -218,5 +272,32 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
         } else {
             Log.e("TTS", "Initilization Failed");
         }
+    }
+
+    public String checkCase(List<String> analyzeResultList) {
+        String checkCase = null;
+        if (analyzeResultList.contains("가")) { //길 찾기
+            checkCase = "MapActivity";
+        } else if (analyzeResultList.contains("찾")) { //길 찾기
+            checkCase = "MapActivity";
+        } else if (analyzeResultList.contains("찍")) { //기념사진
+            checkCase = "TakepictureActivity";
+        }
+
+        if (analyzeResultList.contains("어디")) { //길 찾기
+            checkCase = "MapActivity";
+        }
+
+        if (analyzeResultList.contains("길")) { //길 찾기
+            checkCase = "MapActivity";
+        } else if (analyzeResultList.contains("소개")) { //안내
+
+        } else if (analyzeResultList.contains("사진")) { // 기념사진
+            checkCase = "TakepictureActivity";
+        } else if (analyzeResultList.contains("촬영")) { //기념사진
+            checkCase = "TakepictureActivity";
+        }
+
+        return checkCase;
     }
 }
