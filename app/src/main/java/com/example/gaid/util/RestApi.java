@@ -26,6 +26,7 @@ public interface RestApi {
     @POST("getmorph")
     Call<GetCaseResponseDTO> get_case(@Part("morph") RequestBody requestBody);
 
-    @POST()
-    Call<GetInfoResponseDTO> get_info(@Body GetInfoRequestDTO getInfoRequestDTO);
+    @Multipart
+    @POST("room")
+    Call<GetInfoResponseDTO> get_info(@Part("roomNo") RequestBody requestBody);
 }

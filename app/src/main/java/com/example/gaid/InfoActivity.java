@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,6 +15,8 @@ import com.example.gaid.model.get_info.GetInfoRequestDTO;
 import com.example.gaid.model.get_info.GetInfoResponseDTO;
 import com.example.gaid.util.RestApiUtil;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,10 +29,20 @@ public class InfoActivity extends Activity {
     private String mRoomNumber="";
 
     private RestApiUtil mRestApiUtil;
-    private GetInfoRequestDTO mGetInfoRequestDTO;
+    private RequestBody mRequestBody;
+    private GetInfoResponseDTO mGetInfoResponseDTO;
 
-    private String user_text="";
+    private String user_text = "";
     private int roomNo;
+
+    private String mRoom_no = "";
+    private String mRoom_floor = "";
+    private String mRoom_department = "";
+    private String mRoom_professor = "";
+    private String mRoom_tel = "";
+    private String mRoom_name = "";
+    private String mRoom_business = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,31 +59,44 @@ public class InfoActivity extends Activity {
                 startActivity(intent_in);
             }
         });
-        intent=getIntent();
-        mRoomNumber=intent.getStringExtra("roomNo");
+        intent = getIntent();
+        mRoomNumber = intent.getStringExtra("roomNo");
         System.out.println("roomNo :" + mRoomNumber);
-        ///형걸이형 여기야여기!
+
         mRestApiUtil = new RestApiUtil();
-        mGetInfoRequestDTO = new GetInfoRequestDTO();
+        mRequestBody = RequestBody.create(MediaType.parse("text/plain"), mRoomNumber);
         getInfo();
     }
 
     public void getInfo() {
-        mRestApiUtil.getApi().get_info(mGetInfoRequestDTO).enqueue(new Callback<GetInfoResponseDTO>() {
+        mRestApiUtil.getApi().get_info(mRequestBody).enqueue(new Callback<GetInfoResponseDTO>() {
             @Override
             public void onResponse(Call<GetInfoResponseDTO> call, Response<GetInfoResponseDTO> response) {
                 if(response.isSuccessful()) {
-
+                    mGetInfoResponseDTO = response.body();
+                    setInfo();
                 }
                 else {
-
+                    Log.d("onResponse", "onResponse 에서 에러남");
                 }
             }
 
             @Override
             public void onFailure(Call<GetInfoResponseDTO> call, Throwable t) {
-
+                Log.d("onFailure", t.getMessage());
             }
         });
+    }
+
+    public void setInfo() {
+        mRoom_no = mGetInfoResponseDTO.getRoom_no();
+        mRoom_floor = mGetInfoResponseDTO.getRoom_floor();
+        mRoom_department = mGetInfoResponseDTO.getRoom_department();
+        mRoom_professor = mGetInfoResponseDTO.getRoom_professor();
+        mRoom_tel = mGetInfoResponseDTO.getRoom_tel();
+        mRoom_name = mGetInfoResponseDTO.getRoom_name();
+        mRoom_business = mGetInfoResponseDTO.getRoom_business();
+        System.out.println(mRoom_no + mRoom_floor + mRoom_department + mRoom_professor + mRoom_professor + mRoom_tel + mRoom_name + mRoom_business);
+        //은석아 여기야 여기!!!!
     }
 }

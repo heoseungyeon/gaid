@@ -52,7 +52,7 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
     private RestApiUtil mRestApiUtil;
     private GetCaseRequestDTO mGetCaseRequestDTO;
     private GetCaseResponseDTO mGetCaseResponseDTO;
-    private String mCase;
+    private String mCase ="";
     //Komoran 형태소 분석기
     private Komoran mKomoran;
 
@@ -198,9 +198,9 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
             //getCase(text);
             String morph = text;
             System.out.println("gudrjf1 : " + morph);
-            //RequestBody req = RequestBody.create(MediaType.parse("text/plain"), morph);
+
             RequestBody req = RequestBody.create(MediaType.parse("text/plain"), morph);
-            //MultipartBody.Part image2 = MultipartBody.Part.createFormData("files", pictureFile.getName(), imgFileReqBody);
+
             mRestApiUtil.getApi().get_case(req).enqueue(new Callback<GetCaseResponseDTO>() {
                 @Override
                 public void onResponse(Call<GetCaseResponseDTO> call, Response<GetCaseResponseDTO> response) {
@@ -208,16 +208,13 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
                         Log.d("response.body() : ", response.body().toString());
                         Log.d("response.getFunction()", response.body().getFunction());
                         mGetCaseResponseDTO = response.body();
-                        if (mGetCaseResponseDTO.getFunction().contains("navi")) { //길 찾기 //MapActivity
-                            mCase = "MapActivity";
+                        mCase = checkCase();
+                        System.out.println("mCase : " + mCase);
+                        if(mCase == null) {
+                            speakOut("정확하게 다시 한번 말해주세요");
+                            mRecognizer.startListening(intent);
                         }
-                        else if (mGetCaseResponseDTO.getFunction().contains("info")) { //안내 //InfoActivity
-                            mCase = "InfoActivity";
-                        }
-                        else if (mGetCaseResponseDTO.getFunction().contains("cam")) { //기념사진 //TakepictureActivity
-                            mCase = "TakepictureActivity";
-                        }
-                        if (mCase.contains("MapActivity")) { //길 찾기
+                        else if (mCase.contains("MapActivity")) { //길 찾기
                             speakOut("길찾기기능을 찾으셨군요");
                             Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                             startActivity(intent);
@@ -288,71 +285,20 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
             checkCase = "MapActivity";
         }
         else if (mGetCaseResponseDTO.getFunction().contains("info")) { //안내 //InfoActivity
-            checkCase = "InfoActivity";
+            if(mGetCaseResponseDTO.getRoomNo().contains("0")) {
+                return checkCase;
+            }
+            else {
+                checkCase = "InfoActivity";
+            }
         }
         else if (mGetCaseResponseDTO.getFunction().contains("cam")) { //기념사진 //TakepictureActivity
             checkCase = "TakepictureActivity";
         }
-        //else if (mGetCaseResponseDTO) { //길찾기인가 안내인가 // navi_info
-        //    checkCase = "PopUpActivity";
-        //}
 
         return checkCase;
     }
 
-    public void getCase(String morph) {
-//        mRestApiUtil.getApi().get_case(morph).enqueue(new Callback<GetCaseResponseDTO>() {
-//            @Override
-//            public void onResponse(Call<GetCaseResponseDTO> call, Response<GetCaseResponseDTO> response) {
-//                if (response.isSuccessful()) {
-//                    Log.d("response.body() : ", response.body().toString());
-//                    Log.d("response.getFunction()", response.body().getFunction());
-//                    mGetCaseResponseDTO = response.body();
-//                    mCase = checkCase();
-//                    if (mCase.contains("MapActivity")) { //길 찾기
-//                        speakOut("길찾기기능을 찾으셨군요");
-//                        Intent intent = new Intent(getApplicationContext(), MapActivity.class);
-//                        startActivity(intent);
-//                    } else if (mCase.contains("TakepictureActivity")) { //기념 사진
-//                        speakOut("기념사진찍어드릴게요");
-//                        Intent intent = new Intent(getApplicationContext(), TakepictureActivity.class);
-//                        startActivity(intent);
-//                    } else if (mCase.contains("InfoActivity")) {
-//                        speakOut("소개 해달라구요?");
-//                        Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
-//                        intent.putExtra("roomNo", mGetCaseResponseDTO.getRoomNo());
-//                        startActivity(intent);
-//                    }
-//                } else {
-//                    Log.d("onResponse", "onResponse 에서 에러남");
-//                    speakOut("정확하게 다시 한번 말해주세요");
-//                    mRecognizer.startListening(intent);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<GetCaseResponseDTO> call, Throwable t) {
-//                Log.d("onFailure", t.getMessage());
-//                speakOut("정확하게 다시 한번 말해주세요");
-//                mRecognizer.startListening(intent);
-//            }
-//        });
-
-//        if (mCase.contains("MapActivity")) { //길 찾기
-//            speakOut("길찾기기능을 찾으셨군요");
-//            Intent intent = new Intent(getApplicationContext(), MapActivity.class);
-//            startActivity(intent);
-//        } else if (mCase.contains("TakepictureActivity")) { //기념 사진
-//            speakOut("기념사진찍어드릴게요");
-//            Intent intent = new Intent(getApplicationContext(), TakepictureActivity.class);
-//            startActivity(intent);
-//        } else if (mCase.contains("InfoActivity")) {
-//            speakOut("소개 해달라구요?");
-//            Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
-//            intent.putExtra("roomNo", mGetCaseResponseDTO.getRoomNo());
-//            startActivity(intent);
-//        }
-    }
 
     public void countDownTimer() {
 
