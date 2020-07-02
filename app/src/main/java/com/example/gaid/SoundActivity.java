@@ -217,6 +217,7 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
                         else if (mCase.contains("MapActivity")) { //길 찾기
                             speakOut("길찾기기능을 찾으셨군요");
                             Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+                            intent.putExtra("roomNo", mGetCaseResponseDTO.getRoomNo());
                             startActivity(intent);
                         } else if (mCase.contains("TakepictureActivity")) { //기념 사진
                             speakOut("기념사진찍어드릴게요");
@@ -282,7 +283,12 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
         String checkCase = null;
 
         if (mGetCaseResponseDTO.getFunction().contains("navi")) { //길 찾기 //MapActivity
-            checkCase = "MapActivity";
+            if(mGetCaseResponseDTO.getRoomNo().contains("0")) {
+                return checkCase;
+            }
+            else {
+                checkCase = "MapActivity";
+            }
         }
         else if (mGetCaseResponseDTO.getFunction().contains("info")) { //안내 //InfoActivity
             if(mGetCaseResponseDTO.getRoomNo().contains("0")) {
