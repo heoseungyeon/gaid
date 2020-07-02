@@ -26,6 +26,7 @@ import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -346,39 +347,54 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 System.out.println("result.getTitle():"+result.getTitle());
                 if(result.getTitle().equals("person")) {
                   System.out.println("사람이당");
-                  speakOut("안녕하세요 사람이네요");
-                  Toast toast =
-                          Toast.makeText(
-                                  getApplicationContext(), "사람이당", Toast.LENGTH_SHORT);
-                  toast.show();
-                }
-                //
-                else if(result.getTitle().equals("laptop")) {
-                  System.out.println("사람이당");
-                  speakOut("안녕하세요 노트북이넹");
-                  Toast toast =
-                          Toast.makeText(
-                                  getApplicationContext(), "사람이당", Toast.LENGTH_SHORT);
-                  toast.show();
-                }
-                //
-                else if(result.getTitle().equals("MASK")) {
-                  System.out.println("마스크");
-                  speakOut("안녕하세요 마스크");
-                  Toast toast =
-                          Toast.makeText(
-                                  getApplicationContext(), "마스크", Toast.LENGTH_SHORT);
-                  toast.show();
-                }
+                  //speakOut("대양이 온라인  무엇이든 물어보세요 ");
 
-                else if(result.getTitle().equals("NO_MASK")) {
-                  System.out.println("마스크 안낌");
-                  speakOut("안녕하세요 마스크 안낌");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //메인스레드가 처리한 작업의 번호
+                            if(stopcamera==true){
+                              stopcamera=false;
+                              mRecognizer.startListening(intent);
+                            }
+
+                        }
+                    });
+
+
+
                   Toast toast =
                           Toast.makeText(
-                                  getApplicationContext(), "마스크 안낌", Toast.LENGTH_SHORT);
+                                  getApplicationContext(), "사람이당", Toast.LENGTH_SHORT);
                   toast.show();
                 }
+                //
+//                else if(result.getTitle().equals("laptop")) {
+//                  System.out.println("사람이당");
+//                  speakOut("안녕하세요 노트북이넹");
+//                  Toast toast =
+//                          Toast.makeText(
+//                                  getApplicationContext(), "사람이당", Toast.LENGTH_SHORT);
+//                  toast.show();
+//                }
+//                //
+//                else if(result.getTitle().equals("MASK")) {
+//                  System.out.println("마스크");
+//                  speakOut("안녕하세요 마스크");
+//                  Toast toast =
+//                          Toast.makeText(
+//                                  getApplicationContext(), "마스크", Toast.LENGTH_SHORT);
+//                  toast.show();
+//                }
+//
+//                else if(result.getTitle().equals("NO_MASK")) {
+//                  System.out.println("마스크 안낌");
+//                  speakOut("안녕하세요 마스크 안낌");
+//                  Toast toast =
+//                          Toast.makeText(
+//                                  getApplicationContext(), "마스크 안낌", Toast.LENGTH_SHORT);
+//                  toast.show();
+//                }
 
 
                 LOGGER.i("HJY TEST : " + result.getId() + " // " + result.getTitle() + " // " + result.getConfidence() + " // " + result.getLocation() + " // ");
