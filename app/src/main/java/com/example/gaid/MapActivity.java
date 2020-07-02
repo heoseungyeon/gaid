@@ -109,6 +109,7 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
         setContentView(R.layout.map_1f);
         intent = getIntent();
         mRoomNumber = intent.getStringExtra("roomNo");
+        goal = Integer.parseInt(mRoomNumber);
 
         baseApplication = new BaseApplication();
         textToSpeech = new TextToSpeech(this, this);
@@ -119,7 +120,7 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
             @Override
             public void onClick(View view) {
                 Intent intent_in = new Intent(getApplicationContext(), InfoActivity.class);
-                intent_in.putExtra("no", goal);
+                intent_in.putExtra("roomNo", Integer.toString(goal));
                 startActivity(intent_in);
             }
         });
@@ -320,7 +321,6 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
             } else {
 
                 speakOut("안내시작합니다");
-                goal = Integer.parseInt(mRoomNumber);
 
                 //1,2층에 있는건지 확인
                 boolean check = false;
