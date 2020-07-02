@@ -105,5 +105,17 @@
             android:textColor="#1f4fff"
             android:textSize="50dp"
             android:textStyle="bold" />
+
     </LinearLayout>
+    <Button
+        android:id="@+id/btn_toinfo"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/backgroundlay"
+        android:text="info"
+
+        />
 </LinearLayout>

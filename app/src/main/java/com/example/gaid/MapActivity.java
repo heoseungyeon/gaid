@@ -51,7 +51,7 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
     private int path[];
     private TextToSpeech textToSpeech;
     private GridView gv;
-
+    private Button btn_toinfo;
     private ImageButton ib_back;
     private int[] img;
 
@@ -61,6 +61,15 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
         setContentView(R.layout.map_1f);
 
         textToSpeech = new TextToSpeech(this, this);
+        btn_toinfo=(Button)findViewById(R.id.btn_toinfo);
+        btn_toinfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent_in=new Intent(getApplicationContext(),InfoActivity.class);
+                intent_in.putExtra("no",goal);
+                startActivity(intent_in);
+            }
+        });
         ib_back=(ImageButton)findViewById(R.id.ib_back);
         ib_back.setOnClickListener(new View.OnClickListener() {
             @Override

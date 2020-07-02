@@ -566,6 +566,8 @@ System.out.println("ektl");
     String weatherSummary = weather.getCurrently().getSummary();
     if (weatherSummary.contains("Overcast")) {
       weatherSummary = "  흐림  ";
+      imgWeather.setImageResource(R.drawable.ic_cloud_black_24dp);
+
     }
     if (weatherSummary.contains("Cloudy")) {
       weatherSummary = "  흐림  ";
