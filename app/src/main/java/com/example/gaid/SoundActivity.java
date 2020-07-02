@@ -63,11 +63,11 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
             @Override
             public void onClick(View view) {
                 animationView.playAnimation();
-                mRecognizer.startListening(intent);
             }
         });
         //Lottie Animation start
         animationView.playAnimation();
+        mRecognizer.startListening(intent);
     }
 
     public void init()
@@ -187,12 +187,21 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
                 speakOut("길찾기기능을 찾으셨군요");
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                 startActivity(intent);
+<<<<<<< HEAD
             }
             else if (text.contains("소개")) {
                 speakOut("소개 해달라구요?");
 
             }
             else if (mCase.contains("TakepictureActivity")) {
+=======
+            } else if (text.contains("소개")||text.contains("소계")||text.contains("속의")) {
+                speakOut("소개 해달라구요?");
+                Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+                startActivity(intent);
+
+            } else if (text.contains("사진")) {
+>>>>>>> c2fbbb25dea3c83ee7c67cbef7574f326c204077
                 speakOut("기념사진찍어드릴게요");
                 Intent intent = new Intent(getApplicationContext(), TakepictureActivity.class);
                 startActivity(intent);
@@ -201,6 +210,13 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
                 speakOut("대양이를 불르셨어요?");
                 Intent intent = new Intent(getApplicationContext(), SoundActivity.class);
                 startActivity(intent);
+<<<<<<< HEAD
+=======
+            } else {
+                speakOut("다시 한번 말해주세요");
+                mRecognizer.startListening(intent);
+
+>>>>>>> c2fbbb25dea3c83ee7c67cbef7574f326c204077
             }
             else {
                 speakOut("다시 한번 말해주세요.");

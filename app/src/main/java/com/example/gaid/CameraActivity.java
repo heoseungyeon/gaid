@@ -46,17 +46,23 @@ import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.example.gaid.data.LocationWeatherRepository;
+import com.example.gaid.data.WeatherRepository;
 import com.example.gaid.env.ImageUtils;
 import com.example.gaid.env.Logger;
+import com.example.gaid.model.Weather;
+import com.example.gaid.weather.WeatherContract;
+import com.example.gaid.weather.WeatherPresenter;
 
 
 import java.nio.ByteBuffer;
 
 public abstract class CameraActivity extends Activity
-    implements OnImageAvailableListener, Camera.PreviewCallback, TextToSpeech.OnInitListener{
+    implements OnImageAvailableListener, Camera.PreviewCallback, TextToSpeech.OnInitListener, WeatherContract.View{
   private static final Logger LOGGER = new Logger();
 
   private static final int PERMISSIONS_REQUEST = 1;
@@ -65,6 +71,8 @@ public abstract class CameraActivity extends Activity
   private static final String PERMISSION_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
   private boolean debug = false;
+  private TextView tv_temperature;
+  private TextView tv_weather;
 
   private Handler handler;
   private HandlerThread handlerThread;
@@ -79,6 +87,8 @@ public abstract class CameraActivity extends Activity
 
   private Runnable postInferenceCallback;
   private Runnable imageConverter;
+  private WeatherRepository mRepository;
+  private WeatherPresenter mPresenter;
 
   private VideoView mVideoview;
   protected TextToSpeech textToSpeech;
@@ -96,6 +106,12 @@ public abstract class CameraActivity extends Activity
 
     setContentView(R.layout.activity_main);
     mVideoview = (VideoView) findViewById(R.id.vv_main);
+
+    tv_weather = findViewById(R.id.tv_weatherSummary);
+    tv_temperature = findViewById(R.id.tv_weatherTemperature);
+    mRepository = new LocationWeatherRepository();
+    mPresenter = new WeatherPresenter(mRepository, this);
+    mPresenter.loadWeatherData();
 
     //tts
     textToSpeech = new TextToSpeech(this, this);
@@ -519,6 +535,35 @@ System.out.println("ektl");
       default:
         return 0;
     }
+  }
+  @Override
+  public void showWeatherData(Weather weather) {
+    try {
+      double temperature = weather.getCurrently().getTemperature();
+      temperature = (int)((temperature - 32) / 1.8);
+      String weatherType = weatherType(weather);
+      tv_weather.setText(weatherType);
+      tv_temperature.setText(Double.toString(temperature));
+      System.out.println(weatherType+temperature+"ssook!!");
+
+    }
+    catch (Exception e) {
+      tv_weather.setText("일일 허용량 초과");
+      tv_temperature.setText("일일 허용량 초과");
+    }
+  }
+
+  @Override
+  public void showLoadError(String message) {
+    Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+  }
+
+  public String weatherType(Weather weather) {
+    String weatherSummary = weather.getCurrently().getSummary();
+    if (weatherSummary.contains("Overcast")) {
+      weatherSummary = "  흐림  ";
+    }
+    return weatherSummary;
   }
 
   protected abstract void processImage();
