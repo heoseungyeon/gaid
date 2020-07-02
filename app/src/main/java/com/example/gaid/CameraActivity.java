@@ -46,6 +46,8 @@ import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -89,13 +91,13 @@ public abstract class CameraActivity extends Activity
   private Runnable imageConverter;
   private WeatherRepository mRepository;
   private WeatherPresenter mPresenter;
-
+  private TextClock textclock;
   private VideoView mVideoview;
   protected TextToSpeech textToSpeech;
   final int PERMISSION = 1;
   Intent intent;
   SpeechRecognizer mRecognizer;
-
+private ImageView imgWeather;
 
 
   @Override
@@ -106,9 +108,10 @@ public abstract class CameraActivity extends Activity
 
     setContentView(R.layout.activity_main);
     mVideoview = (VideoView) findViewById(R.id.vv_main);
-
+    textclock=(TextClock)findViewById(R.id.textclock);
     tv_weather = findViewById(R.id.tv_weatherSummary);
     tv_temperature = findViewById(R.id.tv_weatherTemperature);
+    imgWeather=(ImageView)findViewById(R.id.weathericon);
     mRepository = new LocationWeatherRepository();
     mPresenter = new WeatherPresenter(mRepository, this);
     mPresenter.loadWeatherData();
@@ -564,6 +567,11 @@ System.out.println("ektl");
     if (weatherSummary.contains("Overcast")) {
       weatherSummary = "  흐림  ";
     }
+    if (weatherSummary.contains("Cloudy")) {
+      weatherSummary = "  흐림  ";
+      imgWeather.setImageResource(R.drawable.ic_cloud_black_24dp);
+    }
+
     return weatherSummary;
   }
 
