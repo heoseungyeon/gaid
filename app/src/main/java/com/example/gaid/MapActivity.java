@@ -67,6 +67,8 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
 
     ViewDialog viewDialog;
 
+    Intent myintent;
+    String mRoomNumber;
 
     private Button button1f;
     private Button button2f;
@@ -98,6 +100,9 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.map_1f);
+        intent = getIntent();
+        mRoomNumber = intent.getStringExtra("roomNo");
+
         baseApplication = new BaseApplication();
         textToSpeech = new TextToSpeech(this, this);
         btn_toinfo=(Button)findViewById(R.id.btn_toinfo);
@@ -290,6 +295,137 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
             }
         });
 
+        goal=Integer.parseInt(mRoomNumber);
+        //intent로 가져온걸로 길찾기
+        //1,2층에 있는건지 확인
+        boolean check = false;
+        for(int i=0;i< room1list.length;i++){
+            if (room1list[i]==goal) {
+                check = true;
+            }
+        }
+        for(int i=0;i< room2list.length;i++){
+            if (room2list[i]==goal) {
+                check = true;
+            }
+        }
+        boolean anotherfloor21 = false;
+        boolean anotherfloor12 = false;
+        if (check == true) {
+            //2층인데 1층 찾을 경우
+            for(int i=0;i< room1list.length;i++){
+                if(floor==2 && room1list[i]==goal){
+                    anotherfloor21=true;
+                }
+            }
+            //1층인데 2층 찾을 경우
+            for(int i=0;i< room2list.length;i++) {
+                if (floor == 1 && room2list[i] == goal) {
+                    anotherfloor12=true;
+                }
+            }
+            if(anotherfloor21==true){
+                //엘레베이터 탑승
+                search(n[39], n[29]);
+                // 커스텀 아답타 생성
+                MyAdapter adapter2 = new MyAdapter(
+                        getApplicationContext(),
+                        R.layout.row,       // GridView 항목의 레이아웃 row.xml
+                        img, n, paths);    // 데이터
+
+                gv.setAdapter(adapter2);  // 커스텀 아답타를 GridView 에 적용
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewDialog.showDialog();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // TODO Auto-generated method stub
+                                speakOut("엘레베이터를 타고 1층으로 내려갑니다");
+                                speakOut("1층 경로입니다!");
+                            }
+                        }).start();                            }
+                });
+
+
+
+                button1f.setBackgroundColor(Color.YELLOW);
+                button2f.setBackgroundColor(Color.WHITE);
+                init();
+                init_1f();
+                search(n[41], n[goal]);
+
+                floor = 1;
+                // 커스텀 아답타 생성
+                MyAdapter adapter3 = new MyAdapter(
+                        getApplicationContext(),
+                        R.layout.row,       // GridView 항목의 레이아웃 row.xml
+                        img, n, paths);    // 데이터
+                gv.setAdapter(adapter3);  // 커스텀 아답타를 GridView 에 적용
+
+            }else if(anotherfloor12==true){
+                //엘레베이터 탑승
+                search(n[39], n[29]);
+                // 커스텀 아답타 생성
+                MyAdapter adapter4 = new MyAdapter(
+                        getApplicationContext(),
+                        R.layout.row,       // GridView 항목의 레이아웃 row.xml
+                        img, n, paths);    // 데이터
+
+
+                gv.setAdapter(adapter4);  // 커스텀 아답타를 GridView 에 적용
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewDialog.showDialog();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // TODO Auto-generated method stub
+                                speakOut("엘레베이터를 타고 2층으로 올라갑니다");
+                                speakOut("2층 경로입니다!");
+                            }
+                        }).start();
+
+
+                    }
+                });
+
+                init();
+                init_2f();
+                search(n[41], n[goal]);
+                button2f.setBackgroundColor(Color.YELLOW);
+                button1f.setBackgroundColor(Color.WHITE);
+                floor = 2;
+                // 커스텀 아답타 생성
+                MyAdapter adapter2 = new MyAdapter(
+                        getApplicationContext(),
+                        R.layout.row,       // GridView 항목의 레이아웃 row.xml
+                        img, n, paths);    // 데이터
+                gv.setAdapter(adapter2);  // 커스텀 아답타를 GridView 에 적용
+
+            } else{
+                search(n[39], n[goal]);
+
+                Toast.makeText(getApplicationContext(), Integer.toString(goal) + "호실 경로입니다!", Toast.LENGTH_SHORT).show();
+
+                // 커스텀 아답타 생성
+                MyAdapter adapter2 = new MyAdapter(
+                        getApplicationContext(),
+                        R.layout.row,       // GridView 항목의 레이아웃 row.xml
+                        img, n, paths);    // 데이터
+
+                gv.setAdapter(adapter2);  // 커스텀 아답타를 GridView 에 적용
+
+            }
+
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "해당 호실은 없습니다ㅠ.ㅠ", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -308,7 +444,6 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
                     || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "Language is not supported");
             } else {
-                speakOut("가고싶은 호실을 말해주세요");
 
             }
 
