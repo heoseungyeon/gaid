@@ -26,6 +26,7 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
     private LottieAnimationView animationView;
     private TextView sttResultTextView;
     private ImageButton ib_back;
+
     final int PERMISSION = 1;
     Intent intent;
     SpeechRecognizer mRecognizer;
@@ -61,7 +62,6 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
 
     public void init()
     {
-
         sttResultTextView = findViewById(R.id.sttResult);
         textToSpeech = new TextToSpeech(this, this);
 
