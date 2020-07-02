@@ -61,37 +61,7 @@ public class PhotoActivity extends Activity implements PictureContract.View {
         tv_count = (TextView) findViewById(R.id.tv_count);
         btn_qr = (Button) findViewById(R.id.btn_qr);
 
-        generateQRCode("www.naver.com");
-        //generateQRCode("http://172.16.16.136:8080/viewImage/"+qr_url);
-        //http://172.16.16.136:8080/viewImage/n123213411
-        btn_qr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println(qr_url + "Tlqk");
-                if (flag == 0) {
-                    System.out.println("0ssook" + flag);
-                    photoView.setImageBitmap(bitmap_qr);
-                    btn_qr.setText("사진 보기");
-                    count=20;
-                    flag = 1;
-                } else if (flag == 1) {
-                    System.out.println("1ssook" + flag);
-                    bitmap_photo = BitmapFactory.decodeFile(getIntent().getStringExtra("key"));
-                    photoView.setImageBitmap(bitmap_photo);
-                    btn_qr.setText("QR코드 보기");
-                    count=20;
-                    flag = 0;
-
-                }
-
-            }
-        });
-     /*   Intent intent = getIntent();
-        Bitmap bit = (Bitmap) intent.getParcelableExtra("image");
-        photoView = (ImageView) findViewById(R.id.photoview);
-        photoView.setImageBitmap(bit);
-
-      */
+        ////
         Intent intent = getIntent();
 //        byte[] arr=getIntent().getByteArrayExtra("image");
 //        image= BitmapFactory.decodeByteArray(arr,0,arr.length);
@@ -101,15 +71,44 @@ public class PhotoActivity extends Activity implements PictureContract.View {
             bitmap_photo = BitmapFactory.decodeFile(getIntent().getStringExtra("key"));
             photoView.setImageBitmap(bitmap_photo);
 
-/*
+            String pictureFilePath = intent.getStringExtra("key");
+            File pictureFile = new File(pictureFilePath);
             RequestBody imgFileReqBody = RequestBody.create(MediaType.parse("image/*"), pictureFile);
             MultipartBody.Part image2 = MultipartBody.Part.createFormData("files", pictureFile.getName(), imgFileReqBody);
             mSendPictureRepository = new SendPictureRepository(image2);
             mPicturePresenter = new PicturePresenter(mSendPictureRepository, this);
             mPicturePresenter.sendPictureDataToServer(image2);
+            ////
+            generateQRCode("http://172.16.16.136:8080/view_img?img_name="+qr_url);
+            //generateQRCode("http://172.16.16.136:8080/viewImage/"+qr_url);
+            //http://172.16.16.136:8080/viewImage/n123213411
+            btn_qr.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println(qr_url + "Tlqk");
+                    if (flag == 0) {
+                        System.out.println("0ssook" + flag);
+                        photoView.setImageBitmap(bitmap_qr);
+                        btn_qr.setText("사진 보기");
+                        flag = 1;
+                    } else if (flag == 1) {
+                        System.out.println("1ssook" + flag);
+                        bitmap_photo = BitmapFactory.decodeFile(getIntent().getStringExtra("key"));
+                        photoView.setImageBitmap(bitmap_photo);
+                        btn_qr.setText("QR코드 보기");
+                        flag = 0;
 
+                    }
 
- */
+                }
+            });
+     /*   Intent intent = getIntent();
+        Bitmap bit = (Bitmap) intent.getParcelableExtra("image");
+        photoView = (ImageView) findViewById(R.id.photoview);
+        photoView.setImageBitmap(bit);
+
+      */
+
             countDownTimer();
             countDownTimer.start();
         }
@@ -118,7 +117,8 @@ public class PhotoActivity extends Activity implements PictureContract.View {
     public void generateQRCode(String contents) {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         try {
-            bitmap_qr = toBitmap(qrCodeWriter.encode("www.naver.com", QR_CODE, 100, 100));
+            System.out.println(contents+"컨텐츠");
+            bitmap_qr = toBitmap(qrCodeWriter.encode(contents, QR_CODE, 100, 100));
         } catch (WriterException e) {
             e.printStackTrace();
         }
@@ -156,18 +156,19 @@ public class PhotoActivity extends Activity implements PictureContract.View {
         countDownTimer = new CountDownTimer(MILLISINFUTURE, COUNT_DOWN_INTERVAL) {
             public void onTick(long millisUntilFinished) {
                 tv_count.setText(String.valueOf(count) + "초");
+                String realcount= (String) tv_count.getText();
                 count--;
-                if (count == 0) {
+                if (realcount == "0초") {
                     Intent intent = new Intent(getApplicationContext(), DetectorActivity.class);
                     startActivity(intent);
                 }
-                System.out.println(count + "ssssssss");
+                System.out.println(count + "촌데");
             }
 
             public void onFinish() {
-                System.out.println("ssss");
-//                Intent intent = new Intent(getApplicationContext(), DetectorActivity.class);
-//                startActivity(intent);
+//                System.out.println("ssss");
+                Intent intent = new Intent(getApplicationContext(), DetectorActivity.class);
+                startActivity(intent);
             }
         };
     }
