@@ -50,6 +50,7 @@ public class InfoActivity extends Activity {
         tv_etc=(TextView)findViewById(R.id.tv_etc);
         tv_profname=(TextView)findViewById(R.id.tv_profname);
         tv_tel=(TextView)findViewById(R.id.tv_tel);
+        tv_dept = findViewById(R.id.tv_dept);
         btn_tomap=(Button)findViewById(R.id.btn_tomap);
         btn_tomap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,5 +99,8 @@ public class InfoActivity extends Activity {
         mRoom_business = mGetInfoResponseDTO.getRoom_business();
         System.out.println(mRoom_no + mRoom_floor + mRoom_department + mRoom_professor + mRoom_professor + mRoom_tel + mRoom_name + mRoom_business);
         //은석아 여기야 여기!!!!
+        tv_dept.setText(mRoom_department);
+        tv_profname.setText(mRoom_professor);
+        tv_tel.setText(mRoom_tel);
     }
 }
