@@ -56,7 +56,7 @@ public class InfoActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent_in =new Intent(getApplicationContext(),MapActivity.class);
-                intent_in.putExtra("roomNo",roomNo);
+                intent_in.putExtra("roomNo",mRoomNumber);
                 startActivity(intent_in);
             }
         });

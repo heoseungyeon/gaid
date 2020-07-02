@@ -262,6 +262,7 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
                 }
 
                 if (check == true) {
+                    goal=position;
                     search(n[39], n[position]);
                     Toast.makeText(getApplicationContext(), Integer.toString(position) + "호실 경로입니다!", Toast.LENGTH_SHORT).show();
                 } else {
