@@ -102,5 +102,6 @@ public class InfoActivity extends Activity {
         tv_dept.setText(mRoom_department);
         tv_profname.setText(mRoom_professor);
         tv_tel.setText(mRoom_tel);
+        tv_etc.setText(mRoom_business);
     }
 }

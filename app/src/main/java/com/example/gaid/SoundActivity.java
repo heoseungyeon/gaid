@@ -209,6 +209,7 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
                             speakOut("정확하게 다시 한번 말해주세요");
                             mRecognizer.startListening(intent);
                             animationView.playAnimation();
+                            return;
                         }
                         Log.d("response.body() : ", response.body().toString());
                         Log.d("response.getFunction()", response.body().getFunction());

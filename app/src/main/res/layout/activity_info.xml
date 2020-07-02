@@ -16,12 +16,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.45" />
 
+
     <TextView
         android:id="@+id/tv_profname"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/backgroundlay"
+        android:textSize="50dp"
+        android:textAlignment="center"
         android:text="prof text111"
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintLeft_toRightOf="@id/view_empty"
@@ -46,6 +49,8 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/backgroundlay"
         android:text="tel text"
+        android:textSize="50dp"
+        android:textAlignment="center"
         app:layout_constraintHeight_percent="0.2"
 
         app:layout_constraintLeft_toRightOf="@id/view_empty"
@@ -58,6 +63,8 @@
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/backgroundlay"
+        android:textSize="50dp"
+        android:textAlignment="center"
         android:text="dept text"
         app:layout_constraintHeight_percent="0.2"
 
@@ -71,6 +78,8 @@
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/backgroundlay"
+        android:textSize="50dp"
+        android:textAlignment="center"
         android:text="dept text"
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintLeft_toRightOf="@id/view_empty"
