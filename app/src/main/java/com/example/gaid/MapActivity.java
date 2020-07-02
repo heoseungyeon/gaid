@@ -128,8 +128,6 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
 //                startActivity(intent);
 //            }
 //        });
-        init();
-
         viewDialog = new ViewDialog(this);
 
         // 1. 다량의 데이터
@@ -220,7 +218,32 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
 
                 boolean check = false;
 
+                if(floor==1){
+                    button1f.setBackgroundColor(Color.YELLOW);
+                    button2f.setBackgroundColor(Color.WHITE);
+                    init();
+                    init_1f();
+                    // 커스텀 아답타 생성
+                    MyAdapter adapter = new MyAdapter(
+                            getApplicationContext(),
+                            R.layout.row,       // GridView 항목의 레이아웃 row.xml
+                            img, n, paths);    // 데이터
+                    gv.setAdapter(adapter);  // 커스텀 아답타를 GridView 에 적용
+                }else if(floor==2){
+                    init();
+                    init_2f();
+                    button2f.setBackgroundColor(Color.YELLOW);
+                    button1f.setBackgroundColor(Color.WHITE);
+                    // 커스텀 아답타 생성
+                    MyAdapter adapter = new MyAdapter(
+                            getApplicationContext(),
+                            R.layout.row,       // GridView 항목의 레이아웃 row.xml
+                            img, n, paths);    // 데이터
+                    gv.setAdapter(adapter);  // 커스텀 아답타를 GridView 에 적용
+                }
+
                 for(int i=0;i<room.size();i++){
+                    Log.d("roomint",Integer.toString(room.get(i)));
                     if(position==room.get(i)){
                         check = true;
                     }
@@ -228,12 +251,10 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
 
                 if(check==true){
                     search(n[39], n[position]);
-
                     Toast.makeText(getApplicationContext(), Integer.toString(position) + "호실 경로입니다!", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     Toast.makeText(getApplicationContext(), "해당 위치는 경로를 제공하지 않습니다ㅠ.ㅠ", Toast.LENGTH_SHORT).show();
-
                 }
                 // 커스텀 아답타 생성
                 MyAdapter adapter = new MyAdapter(
@@ -770,8 +791,8 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
                                     @Override
                                     public void run() {
                                         // TODO Auto-generated method stub
-                                        speakOut("엘레베이터를 타고 2층으로 올라갑니다");
-                                        speakOut("2층 경로입니다!");
+                                        speakOut("엘레베이터를 타고 1층으로 내려갑니다");
+                                        speakOut("1층 경로입니다!");
                                     }
                                 }).start();                            }
                         });
