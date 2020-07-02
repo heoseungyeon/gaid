@@ -490,6 +490,23 @@ public abstract class CameraActivity extends Activity
       postInferenceCallback.run();
     }
   }
+  protected void onRestart() {
+    super.onRestart();
+    mVideoview = (VideoView) findViewById(R.id.vv_main);
+System.out.println("ektl");
+    //play video
+    Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.backvideo);
+    mVideoview.setVideoURI(uri);
+    mVideoview.start();
+    //loop
+    mVideoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+      @Override
+      public void onPrepared(MediaPlayer mp) {
+        mp.setLooping(true);
+        mp.setVolume(0, 0);
+      }
+    });
+  }
 
   protected int getScreenOrientation() {
     switch (getWindowManager().getDefaultDisplay().getRotation()) {
