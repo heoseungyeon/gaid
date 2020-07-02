@@ -205,6 +205,11 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
                 @Override
                 public void onResponse(Call<GetCaseResponseDTO> call, Response<GetCaseResponseDTO> response) {
                     if (response.isSuccessful()) {
+                        if(response.body().getFunction() == null) {
+                            speakOut("정확하게 다시 한번 말해주세요");
+                            mRecognizer.startListening(intent);
+                            animationView.playAnimation();
+                        }
                         Log.d("response.body() : ", response.body().toString());
                         Log.d("response.getFunction()", response.body().getFunction());
                         mGetCaseResponseDTO = response.body();
