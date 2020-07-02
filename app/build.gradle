@@ -42,6 +42,8 @@ dependencies {
     implementation 'com.airbnb.android:lottie:2.5.5'
     implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
 
-
-
+    implementation('com.github.shin285:KOMORAN:3.3.3') {
+        exclude group: 'com.github.shineware', module: 'commons'
+        exclude group: 'com.github.shineware', module: 'aho-corasick'
+    }
 }

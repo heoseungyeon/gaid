@@ -21,6 +21,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import java.util.ArrayList;
 import java.util.Locale;
 
+
 public class SoundActivity extends Activity implements TextToSpeech.OnInitListener{
     private TextToSpeech textToSpeech;
     private LottieAnimationView animationView;
@@ -159,7 +160,7 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
                 sttResultTextView.setText(matches.get(i));
             }
 
-            text=sttResultTextView.getText().toString();
+            text = sttResultTextView.getText().toString();
             if (text.contains("길")||text.contains("어떻게 가")||text.contains("어디에 있어")) {
                 speakOut("길찾기기능을 찾으셨군요");
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
@@ -175,7 +176,7 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
                 Intent intent = new Intent(getApplicationContext(), SoundActivity.class);
                 startActivity(intent);
             } else {
-                speakOut("제대로 좀 말해주세요 ㅋ");
+                speakOut("다시 한번 말해주세요");
             }
         }
 
