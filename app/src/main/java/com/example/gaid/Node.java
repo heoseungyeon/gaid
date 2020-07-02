@@ -53,6 +53,10 @@ public class Node {
         this.neighbors.addAll(Arrays.asList(node));
     }
 
+    public void clearNeighbors(Node... node) {
+        this.neighbors.removeAll(Arrays.asList(node));
+    }
+
     public Node getParent() {
         return parent;
     }

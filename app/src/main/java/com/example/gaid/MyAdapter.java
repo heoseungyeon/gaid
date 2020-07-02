@@ -47,6 +47,7 @@ class MyAdapter extends BaseAdapter {
         return position;
     }
 
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null)
@@ -64,21 +65,18 @@ class MyAdapter extends BaseAdapter {
                 }
                 if (node[i].getKind().equals("R")) {
                     iv.setImageResource(R.drawable.room);
-                    tv.setText(Integer.toString(i)+"호실");
+                    tv.setText(Integer.toString(i) + "호실");
                 }
                 if (node[i].getKind().equals("E")) {
                     iv.setImageResource(R.drawable.elevator);
                     tv.setText("E");
 
                 }
-                if(i==39){
-                    iv.setImageResource(R.drawable.current);
-                }
 
                 if (node[i].getKind().equals("W")) {
                     iv.setImageResource(R.drawable.black);
                 }
-                if(i==51){
+                if (i == 51) {
                     iv.setImageResource(R.drawable.enter);
                 }
             }
@@ -87,24 +85,21 @@ class MyAdapter extends BaseAdapter {
         for (int i = path.size() - 1; i >= 0; i--) {
             Log.d("i", Integer.toString(i));
             if (path.get(i) == position) {
-                    if(i==path.size()-1)
-                    {
-                        iv.setImageResource(R.drawable.current);
-                    }
-                    else if(i==0){
-                        iv.setImageResource(R.drawable.destination);
-                    }
-                    else{
-                        iv.setImageResource(R.drawable.road);
+                if (i == 39) {
+                    iv.setImageResource(R.drawable.path);
+                }
+                if (i == path.size() - 1) {
+                    iv.setImageResource(R.drawable.current);
+                } else if (i == 0) {
+                    iv.setImageResource(R.drawable.destination);
+                } else {
+                    iv.setImageResource(R.drawable.road);
 
-                    }
+                }
 
 
             }
         }
-
-
-
 
 
         return convertView;

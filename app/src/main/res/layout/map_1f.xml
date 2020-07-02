@@ -47,6 +47,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/floortext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -85,6 +86,7 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/button1f"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -96,6 +98,7 @@
             android:textStyle="bold" />
 
         <Button
+            android:id="@+id/button2f"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#ffffff"
@@ -105,5 +108,17 @@
             android:textColor="#1f4fff"
             android:textSize="50dp"
             android:textStyle="bold" />
+
     </LinearLayout>
+    <Button
+        android:id="@+id/btn_toinfo"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/backgroundlay"
+        android:text="info"
+
+        />
 </LinearLayout>

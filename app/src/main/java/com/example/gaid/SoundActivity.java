@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -22,22 +23,28 @@ import com.example.gaid.model.get_case.GetCaseResponseDTO;
 import com.example.gaid.util.RestApiUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.Token;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class SoundActivity extends Activity implements TextToSpeech.OnInitListener{
+public class SoundActivity extends Activity implements TextToSpeech.OnInitListener {
     private TextToSpeech textToSpeech;
     private LottieAnimationView animationView;
     private TextView sttResultTextView;
     private ImageButton ib_back;
+    private int count = 20;
+    private CountDownTimer countDownTimer;
+    private static final int MILLISINFUTURE = 20 * 1000;
+    private static final int COUNT_DOWN_INTERVAL = 1000;
+
     final int PERMISSION = 1;
     Intent intent;
     SpeechRecognizer mRecognizer;
@@ -54,7 +61,7 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sound);
 
-        ib_back=(ImageButton)findViewById(R.id.ib_back);
+        ib_back = (ImageButton) findViewById(R.id.ib_back);
         ib_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,23 +79,24 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
             @Override
             public void onClick(View view) {
                 animationView.playAnimation();
+                mRecognizer.startListening(intent);
             }
         });
         //Lottie Animation start
         animationView.playAnimation();
-        mRecognizer.startListening(intent);
+        countDownTimer();
+        countDownTimer.start();
+
     }
 
-    public void init()
-    {
-
+    public void init() {
         sttResultTextView = findViewById(R.id.sttResult);
         textToSpeech = new TextToSpeech(this, this);
 
-        intent=new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,getPackageName());
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
-        mRecognizer= SpeechRecognizer.createSpeechRecognizer(this);
+        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+        mRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         mRecognizer.setRecognitionListener(listener);
 
         mGetCaseRequestDTO = new GetCaseRequestDTO();
@@ -99,11 +107,11 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
         textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         boolean speakingEnd = textToSpeech.isSpeaking();
         Log.d("TTS", "SPOKE");
-        do{
+        do {
             speakingEnd = textToSpeech.isSpeaking();
         } while (speakingEnd);
-        Log.d("done","spoke Done");
-        if(text.equals("안녕하세요 대양AI센터 입니다 무엇을 도와드릴까요?")){
+        Log.d("done", "spoke Done");
+        if (text.equals("안녕하세요 대양AI센터 입니다 무엇을 도와드릴까요?")) {
             mRecognizer.startListening(intent);
         }
     }
@@ -180,53 +188,63 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
                     results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             animationView.cancelAnimation();
 
-            for(int i = 0; i < matches.size() ; i++){
+            for (int i = 0; i < matches.size(); i++) {
                 sttResultTextView.setText(matches.get(i));
             }
 
             text = sttResultTextView.getText().toString();
+            Log.d("soundActivity에서 서버로 입력:", text);
+            //mGetCaseRequestDTO.setMorph(text);
+            //getCase(text);
+            String morph = text;
+            System.out.println("gudrjf1 : " + morph);
+            //RequestBody req = RequestBody.create(MediaType.parse("text/plain"), morph);
+            RequestBody req = RequestBody.create(MediaType.parse("text/plain"), morph);
+            //MultipartBody.Part image2 = MultipartBody.Part.createFormData("files", pictureFile.getName(), imgFileReqBody);
+            mRestApiUtil.getApi().get_case(req).enqueue(new Callback<GetCaseResponseDTO>() {
+                @Override
+                public void onResponse(Call<GetCaseResponseDTO> call, Response<GetCaseResponseDTO> response) {
+                    if (response.isSuccessful()) {
+                        Log.d("response.body() : ", response.body().toString());
+                        Log.d("response.getFunction()", response.body().getFunction());
+                        mGetCaseResponseDTO = response.body();
+                        if (mGetCaseResponseDTO.getFunction().contains("navi")) { //길 찾기 //MapActivity
+                            mCase = "MapActivity";
+                        }
+                        else if (mGetCaseResponseDTO.getFunction().contains("info")) { //안내 //InfoActivity
+                            mCase = "InfoActivity";
+                        }
+                        else if (mGetCaseResponseDTO.getFunction().contains("cam")) { //기념사진 //TakepictureActivity
+                            mCase = "TakepictureActivity";
+                        }
+                        if (mCase.contains("MapActivity")) { //길 찾기
+                            speakOut("길찾기기능을 찾으셨군요");
+                            Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+                            startActivity(intent);
+                        } else if (mCase.contains("TakepictureActivity")) { //기념 사진
+                            speakOut("기념사진찍어드릴게요");
+                            Intent intent = new Intent(getApplicationContext(), TakepictureActivity.class);
+                            startActivity(intent);
+                        } else if (mCase.contains("InfoActivity")) {
+                            speakOut("소개 해달라구요?");
+                            Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+                            intent.putExtra("roomNo", mGetCaseResponseDTO.getRoomNo());
+                            startActivity(intent);
+                        }
+                    } else {
+                        Log.d("onResponse", "onResponse 에서 에러남");
+                        speakOut("정확하게 다시 한번 말해주세요");
+                        mRecognizer.startListening(intent);
+                    }
+                }
 
-            mGetCaseRequestDTO.setMorph(text);
-            mCase = getCase(mGetCaseRequestDTO);
-
-            if (mCase.contains("MapActivity")) { //길 찾기
-                speakOut("길찾기기능을 찾으셨군요");
-                Intent intent = new Intent(getApplicationContext(), MapActivity.class);
-                startActivity(intent);
-            }
-            else if (mCase.contains("TakepictureActivity")) { //기념 사진
-                speakOut("기념사진찍어드릴게요");
-                Intent intent = new Intent(getApplicationContext(), TakepictureActivity.class);
-                startActivity(intent);
-            }
-            else if (mCase.contains("InfoActivity")) {
-                speakOut("소개 해달라구요?");
-                Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
-                intent.putExtra("roomNo", mGetCaseResponseDTO.getRoomNo());
-                startActivity(intent);
-            }
-            else {
-                speakOut("다시 한번 말해주세요");
-                mRecognizer.startListening(intent);
-            }
-
-            //            if (text.contains("길")||text.contains("어떻게 가")||text.contains("어디에 있어")) {
-//                speakOut("길찾기기능을 찾으셨군요");
-//                Intent intent = new Intent(getApplicationContext(), MapActivity.class);
-//                startActivity(intent);
-//            } else if (text.contains("소개")) {
-//                speakOut("소개 해달라구요?");
-//            } else if (text.contains("사진")) {
-//                speakOut("기념사진찍어드릴게요");
-//                Intent intent = new Intent(getApplicationContext(), TakepictureActivity.class);
-//                startActivity(intent);
-//            }else if (text.contains("대양")) {
-//                speakOut("대양이를 불르셨어요?");
-//                Intent intent = new Intent(getApplicationContext(), SoundActivity.class);
-//                startActivity(intent);
-//            } else {
-//                speakOut("다시 한번 말해주세요");
-//            }
+                @Override
+                public void onFailure(Call<GetCaseResponseDTO> call, Throwable t) {
+                    Log.d("onFailure", t.getMessage());
+                    speakOut("정확하게 다시 한번 말해주세요");
+                    mRecognizer.startListening(intent);
+                }
+            });
         }
 
         @Override
@@ -239,6 +257,7 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
 
         }
     };
+
 
     @Override
     public void onInit(int status) {
@@ -281,30 +300,79 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
         return checkCase;
     }
 
-    public String getCase(GetCaseRequestDTO mGetCaseRequestDTO) {
-        String activityCase = "";
-        mRestApiUtil.getApi().get_case(mGetCaseRequestDTO).enqueue(new Callback<GetCaseResponseDTO>() {
-            @Override
-            public void onResponse(Call<GetCaseResponseDTO> call, Response<GetCaseResponseDTO> response) {
-                if(response.isSuccessful()) {
-                    mGetCaseResponseDTO = response.body();
-                    checkCase();
+    public void getCase(String morph) {
+//        mRestApiUtil.getApi().get_case(morph).enqueue(new Callback<GetCaseResponseDTO>() {
+//            @Override
+//            public void onResponse(Call<GetCaseResponseDTO> call, Response<GetCaseResponseDTO> response) {
+//                if (response.isSuccessful()) {
+//                    Log.d("response.body() : ", response.body().toString());
+//                    Log.d("response.getFunction()", response.body().getFunction());
+//                    mGetCaseResponseDTO = response.body();
+//                    mCase = checkCase();
+//                    if (mCase.contains("MapActivity")) { //길 찾기
+//                        speakOut("길찾기기능을 찾으셨군요");
+//                        Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+//                        startActivity(intent);
+//                    } else if (mCase.contains("TakepictureActivity")) { //기념 사진
+//                        speakOut("기념사진찍어드릴게요");
+//                        Intent intent = new Intent(getApplicationContext(), TakepictureActivity.class);
+//                        startActivity(intent);
+//                    } else if (mCase.contains("InfoActivity")) {
+//                        speakOut("소개 해달라구요?");
+//                        Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+//                        intent.putExtra("roomNo", mGetCaseResponseDTO.getRoomNo());
+//                        startActivity(intent);
+//                    }
+//                } else {
+//                    Log.d("onResponse", "onResponse 에서 에러남");
+//                    speakOut("정확하게 다시 한번 말해주세요");
+//                    mRecognizer.startListening(intent);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<GetCaseResponseDTO> call, Throwable t) {
+//                Log.d("onFailure", t.getMessage());
+//                speakOut("정확하게 다시 한번 말해주세요");
+//                mRecognizer.startListening(intent);
+//            }
+//        });
+
+//        if (mCase.contains("MapActivity")) { //길 찾기
+//            speakOut("길찾기기능을 찾으셨군요");
+//            Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+//            startActivity(intent);
+//        } else if (mCase.contains("TakepictureActivity")) { //기념 사진
+//            speakOut("기념사진찍어드릴게요");
+//            Intent intent = new Intent(getApplicationContext(), TakepictureActivity.class);
+//            startActivity(intent);
+//        } else if (mCase.contains("InfoActivity")) {
+//            speakOut("소개 해달라구요?");
+//            Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+//            intent.putExtra("roomNo", mGetCaseResponseDTO.getRoomNo());
+//            startActivity(intent);
+//        }
+    }
+
+    public void countDownTimer() {
+
+        countDownTimer = new CountDownTimer(MILLISINFUTURE, COUNT_DOWN_INTERVAL) {
+            public void onTick(long millisUntilFinished) {
+                count--;
+                if (count == 0) {
+                    Intent intent = new Intent(getApplicationContext(), DetectorActivity.class);
+                    startActivity(intent);
                 }
-                else {
-                    System.out.println("onResponse 에서 에러남. not response.isSuccessful");
-                    speakOut("정확하게 다시 한번 말해주세요");
-                    mRecognizer.startListening(intent);
-                }
+                System.out.println(count + "ssssssss");
             }
 
-            @Override
-            public void onFailure(Call<GetCaseResponseDTO> call, Throwable t) {
-                System.out.println("onFailure, t.getMessage : " + t.getMessage());
-                speakOut("정확하게 다시 한번 말해주세요");
-                mRecognizer.startListening(intent);
+            public void onFinish() {
+                System.out.println("ssss");
+//                Intent intent = new Intent(getApplicationContext(), DetectorActivity.class);
+//                startActivity(intent);
             }
-        });
-
-        return activityCase;
+        };
     }
 }
+
+

@@ -5,31 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
     <VideoView
         android:id="@+id/vv_main"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        tools:ignore="MissingConstraints"
-        />
+        tools:ignore="MissingConstraints" />
+
     <TextView
         android:id="@+id/tv_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="세종대학교 대양 AI 센터에 오신것을 환영합니다!"
-        android:textSize="40dp"
         android:background="@drawable/backgroundlay"
+        android:text="세종대학교 대양 AI 센터에 오신것을 환영합니다!"
         android:textColor="#000000"
+        android:textSize="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_weather"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="현재 날씨"
-        android:layout_marginTop="50dp"
+    <ImageView
+        android:id="@+id/weathericon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+
+        android:src="@drawable/ic_record_voice_over_black_24dp"
         app:layout_constraintLeft_toLeftOf="@id/tv_main"
         app:layout_constraintTop_toBottomOf="@id/tv_main"
         />
@@ -41,35 +43,33 @@
         android:layout_marginTop="50dp"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        android:text="맑음"
-        app:layout_constraintLeft_toRightOf="@id/tv_weather"
-        app:layout_constraintTop_toBottomOf="@id/tv_main"/>
+        app:layout_constraintLeft_toRightOf="@id/weathericon"
+        app:layout_constraintTop_toBottomOf="@id/tv_main" />
 
     <TextView
         android:id="@+id/tv_weatherTemperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="50dp"
         android:text="tempera"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintLeft_toRightOf="@id/tv_weatherSummary"
-        app:layout_constraintTop_toBottomOf="@id/tv_main"/>
-
+        app:layout_constraintTop_toBottomOf="@id/tv_main" />
 
 
     <TextClock
         android:id="@+id/textclock"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginTop="50dp"
         android:format12Hour="yy/MM/dd hh:mm"
         android:format24Hour="HH:mm"
         android:textSize="20sp"
-        android:layout_marginTop="50dp"
 
         app:layout_constraintRight_toRightOf="@id/tv_main"
-        app:layout_constraintTop_toBottomOf="@id/tv_main"
-        />
+        app:layout_constraintTop_toBottomOf="@id/tv_main" />
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -79,7 +79,6 @@
         android:background="#000"
         tools:context="com.example.gaid.CameraActivity"
         tools:ignore="MissingConstraints" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

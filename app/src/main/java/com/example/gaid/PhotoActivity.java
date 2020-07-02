@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Picture;
 import android.os.Bundle;
@@ -71,12 +72,14 @@ public class PhotoActivity extends Activity implements PictureContract.View {
                     System.out.println("0ssook" + flag);
                     photoView.setImageBitmap(bitmap_qr);
                     btn_qr.setText("사진 보기");
+                    count=20;
                     flag = 1;
                 } else if (flag == 1) {
                     System.out.println("1ssook" + flag);
                     bitmap_photo = BitmapFactory.decodeFile(getIntent().getStringExtra("key"));
                     photoView.setImageBitmap(bitmap_photo);
                     btn_qr.setText("QR코드 보기");
+                    count=20;
                     flag = 0;
 
                 }
@@ -152,9 +155,9 @@ public class PhotoActivity extends Activity implements PictureContract.View {
 
         countDownTimer = new CountDownTimer(MILLISINFUTURE, COUNT_DOWN_INTERVAL) {
             public void onTick(long millisUntilFinished) {
-                tv_count.setText(String.valueOf(count)+"초");
+                tv_count.setText(String.valueOf(count) + "초");
                 count--;
-                if(count==0){
+                if (count == 0) {
                     Intent intent = new Intent(getApplicationContext(), DetectorActivity.class);
                     startActivity(intent);
                 }
@@ -168,6 +171,8 @@ public class PhotoActivity extends Activity implements PictureContract.View {
             }
         };
     }
+
+
 
 
 //    private class ExampleThread extends Thread {

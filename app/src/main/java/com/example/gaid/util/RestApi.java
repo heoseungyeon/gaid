@@ -7,6 +7,7 @@ import com.example.gaid.model.get_info.GetInfoResponseDTO;
 import com.example.gaid.model.send_picture.SendPictureResponseDTO;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
@@ -21,8 +22,9 @@ public interface RestApi {
     @POST("upload") //여기다가 HTTP 통신 방식 넣어야 함.
     Call<SendPictureResponseDTO> send_picture(@Part MultipartBody.Part files);
 
+    @Multipart
     @POST("getmorph")
-    Call<GetCaseResponseDTO> get_case(@Body GetCaseRequestDTO getCaseRequestDTO);
+    Call<GetCaseResponseDTO> get_case(@Part("morph") RequestBody requestBody);
 
     @POST()
     Call<GetInfoResponseDTO> get_info(@Body GetInfoRequestDTO getInfoRequestDTO);

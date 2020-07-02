@@ -46,6 +46,8 @@ import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -89,13 +91,13 @@ public abstract class CameraActivity extends Activity
   private Runnable imageConverter;
   private WeatherRepository mRepository;
   private WeatherPresenter mPresenter;
-
+  private TextClock textclock;
   private VideoView mVideoview;
   protected TextToSpeech textToSpeech;
   final int PERMISSION = 1;
   Intent intent;
   SpeechRecognizer mRecognizer;
-
+private ImageView imgWeather;
 
 
   @Override
@@ -106,9 +108,10 @@ public abstract class CameraActivity extends Activity
 
     setContentView(R.layout.activity_main);
     mVideoview = (VideoView) findViewById(R.id.vv_main);
-
+    textclock=(TextClock)findViewById(R.id.textclock);
     tv_weather = findViewById(R.id.tv_weatherSummary);
     tv_temperature = findViewById(R.id.tv_weatherTemperature);
+    imgWeather=(ImageView)findViewById(R.id.weathericon);
     mRepository = new LocationWeatherRepository();
     mPresenter = new WeatherPresenter(mRepository, this);
     mPresenter.loadWeatherData();
@@ -389,13 +392,13 @@ public abstract class CameraActivity extends Activity
     try {
       for (final String cameraId : manager.getCameraIdList()) {
         final CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
-
+        System.out.println("ididididid"+cameraId);
         // We don't use a front facing camera in this sample.
+        //final Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
         final Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
-        if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
+        if (facing != null && facing == CameraCharacteristics.LENS_FACING_BACK) {
           continue;
         }
-
 
         final StreamConfigurationMap map =
             characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
@@ -544,6 +547,7 @@ System.out.println("ektl");
       String weatherType = weatherType(weather);
       tv_weather.setText(weatherType);
       tv_temperature.setText(Double.toString(temperature));
+      tv_temperature.append("도");
       System.out.println(weatherType+temperature+"ssook!!");
 
     }
@@ -562,7 +566,14 @@ System.out.println("ektl");
     String weatherSummary = weather.getCurrently().getSummary();
     if (weatherSummary.contains("Overcast")) {
       weatherSummary = "  흐림  ";
+      imgWeather.setImageResource(R.drawable.ic_cloud_black_24dp);
+
     }
+    if (weatherSummary.contains("Cloudy")) {
+      weatherSummary = "  흐림  ";
+      imgWeather.setImageResource(R.drawable.ic_cloud_black_24dp);
+    }
+
     return weatherSummary;
   }
 
