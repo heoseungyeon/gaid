@@ -17,6 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.gaid.model.get_case.GetCaseRequestDTO;
+import com.example.gaid.model.get_case.GetCaseResponseDTO;
+import com.example.gaid.util.RestApiUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,9 @@ import java.util.Locale;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.nlp.komoran.model.Token;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class SoundActivity extends Activity implements TextToSpeech.OnInitListener{
@@ -36,6 +42,9 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
     Intent intent;
     SpeechRecognizer mRecognizer;
 
+    private RestApiUtil mRestApiUtil;
+    private GetCaseRequestDTO mGetCaseRequestDTO;
+    private GetCaseResponseDTO mGetCaseResponseDTO;
     private String mCase;
     //Komoran 형태소 분석기
     private Komoran mKomoran;
@@ -81,8 +90,12 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
         mRecognizer= SpeechRecognizer.createSpeechRecognizer(this);
         mRecognizer.setRecognitionListener(listener);
+
+        mGetCaseRequestDTO = new GetCaseRequestDTO();
+        mRestApiUtil = new RestApiUtil();
     }
-    private void speakOut(String text) {
+
+    public void speakOut(String text) {
         textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         boolean speakingEnd = textToSpeech.isSpeaking();
         Log.d("TTS", "SPOKE");
@@ -162,64 +175,39 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
         public void onResults(Bundle results) {
             // 말을 하면 ArrayList에 단어를 넣고 textView에 단어를 이어줍니다.
 
-            mKomoran = new Komoran("models_full");
-            mKomoran.setFWDic("user_data/fwd.user");
-            mKomoran.setUserDic("user_data/dic.user");
-
             String text = "";
             ArrayList<String> matches =
                     results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             animationView.cancelAnimation();
 
-//            for(int i = 0; i < matches.size() ; i++){
-//                sttResultTextView.setText(matches.get(i));
-//            }
+            for(int i = 0; i < matches.size() ; i++){
+                sttResultTextView.setText(matches.get(i));
+            }
 
-            sttResultTextView.setText(matches.get(0));
             text = sttResultTextView.getText().toString();
 
-            KomoranResult analyzeResultList = mKomoran.analyze(text);
-            //List<Token> tokenList = analyzeResultList.getTokenList();
-            mCase = checkCase(analyzeResultList.getMorphesByTags("VV", "NP", "NNG", "SN")); //NNB
+            mGetCaseRequestDTO.setMorph(text);
+            mCase = getCase(mGetCaseRequestDTO);
 
-
-            if (mCase.contains("MapActivity")) {
+            if (mCase.contains("MapActivity")) { //길 찾기
                 speakOut("길찾기기능을 찾으셨군요");
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                 startActivity(intent);
-<<<<<<< HEAD
             }
-            else if (text.contains("소개")) {
-                speakOut("소개 해달라구요?");
-
-            }
-            else if (mCase.contains("TakepictureActivity")) {
-=======
-            } else if (text.contains("소개")||text.contains("소계")||text.contains("속의")) {
-                speakOut("소개 해달라구요?");
-                Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
-                startActivity(intent);
-
-            } else if (text.contains("사진")) {
->>>>>>> c2fbbb25dea3c83ee7c67cbef7574f326c204077
+            else if (mCase.contains("TakepictureActivity")) { //기념 사진
                 speakOut("기념사진찍어드릴게요");
                 Intent intent = new Intent(getApplicationContext(), TakepictureActivity.class);
                 startActivity(intent);
             }
-            else if (text.contains("대양")) {
-                speakOut("대양이를 불르셨어요?");
-                Intent intent = new Intent(getApplicationContext(), SoundActivity.class);
+            else if (mCase.contains("InfoActivity")) {
+                speakOut("소개 해달라구요?");
+                Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+                intent.putExtra("roomNo", mGetCaseResponseDTO.getRoomNo());
                 startActivity(intent);
-<<<<<<< HEAD
-=======
-            } else {
-                speakOut("다시 한번 말해주세요");
-                mRecognizer.startListening(intent);
-
->>>>>>> c2fbbb25dea3c83ee7c67cbef7574f326c204077
             }
             else {
-                speakOut("다시 한번 말해주세요.");
+                speakOut("다시 한번 말해주세요");
+                mRecognizer.startListening(intent);
             }
 
             //            if (text.contains("길")||text.contains("어떻게 가")||text.contains("어디에 있어")) {
@@ -274,30 +262,49 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
         }
     }
 
-    public String checkCase(List<String> analyzeResultList) {
+    public String checkCase() {
         String checkCase = null;
-        if (analyzeResultList.contains("가")) { //길 찾기
-            checkCase = "MapActivity";
-        } else if (analyzeResultList.contains("찾")) { //길 찾기
-            checkCase = "MapActivity";
-        } else if (analyzeResultList.contains("찍")) { //기념사진
-            checkCase = "TakepictureActivity";
-        }
 
-        if (analyzeResultList.contains("어디")) { //길 찾기
+        if (mGetCaseResponseDTO.getFunction().contains("navi")) { //길 찾기 //MapActivity
             checkCase = "MapActivity";
         }
-
-        if (analyzeResultList.contains("길")) { //길 찾기
-            checkCase = "MapActivity";
-        } else if (analyzeResultList.contains("소개")) { //안내
-
-        } else if (analyzeResultList.contains("사진")) { // 기념사진
-            checkCase = "TakepictureActivity";
-        } else if (analyzeResultList.contains("촬영")) { //기념사진
+        else if (mGetCaseResponseDTO.getFunction().contains("info")) { //안내 //InfoActivity
+            checkCase = "InfoActivity";
+        }
+        else if (mGetCaseResponseDTO.getFunction().contains("cam")) { //기념사진 //TakepictureActivity
             checkCase = "TakepictureActivity";
         }
+        //else if (mGetCaseResponseDTO) { //길찾기인가 안내인가 // navi_info
+        //    checkCase = "PopUpActivity";
+        //}
 
         return checkCase;
+    }
+
+    public String getCase(GetCaseRequestDTO mGetCaseRequestDTO) {
+        String activityCase = "";
+        mRestApiUtil.getApi().get_case(mGetCaseRequestDTO).enqueue(new Callback<GetCaseResponseDTO>() {
+            @Override
+            public void onResponse(Call<GetCaseResponseDTO> call, Response<GetCaseResponseDTO> response) {
+                if(response.isSuccessful()) {
+                    mGetCaseResponseDTO = response.body();
+                    checkCase();
+                }
+                else {
+                    System.out.println("onResponse 에서 에러남. not response.isSuccessful");
+                    speakOut("정확하게 다시 한번 말해주세요");
+                    mRecognizer.startListening(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetCaseResponseDTO> call, Throwable t) {
+                System.out.println("onFailure, t.getMessage : " + t.getMessage());
+                speakOut("정확하게 다시 한번 말해주세요");
+                mRecognizer.startListening(intent);
+            }
+        });
+
+        return activityCase;
     }
 }

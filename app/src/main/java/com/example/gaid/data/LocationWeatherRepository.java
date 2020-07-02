@@ -9,11 +9,9 @@ public class LocationWeatherRepository implements WeatherRepository {
 
     private WeatherUtil mWeatherUtil;
 
-
     public LocationWeatherRepository() {
         mWeatherUtil = new WeatherUtil();
     }
-
 
     @Override
     public boolean isAvailable() {
