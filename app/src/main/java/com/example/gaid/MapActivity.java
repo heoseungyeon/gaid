@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +52,7 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
     private TextToSpeech textToSpeech;
     private GridView gv;
 
-
+    private ImageButton ib_back;
     private int[] img;
 
     @Override
@@ -60,6 +61,13 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
         setContentView(R.layout.map_1f);
 
         textToSpeech = new TextToSpeech(this, this);
+        ib_back=(ImageButton)findViewById(R.id.ib_back);
+        ib_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 //        setContentView(R.layout.activity_map);
 //        System.out.println("맵액티비티");
 //        tv1=findViewById(R.id.node1);

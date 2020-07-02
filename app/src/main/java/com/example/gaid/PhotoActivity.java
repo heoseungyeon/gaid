@@ -34,7 +34,7 @@ import static com.google.zxing.BarcodeFormat.QR_CODE;
 
 public class PhotoActivity extends Activity implements PictureContract.View {
     private ImageView photoView;
-    private Bitmap image;
+    private Bitmap bitmap_photo,bitmap_qr;
     private Button btn_qr;
     private String qr_url;
     private SendPictureRepository mSendPictureRepository;
@@ -47,11 +47,27 @@ public class PhotoActivity extends Activity implements PictureContract.View {
         System.out.println("머야");
         photoView = (ImageView) findViewById(R.id.photoview);
         btn_qr = (Button) findViewById(R.id.btn_qr);
+        generateQRCode("www.naver.com");
+        //generateQRCode("http://172.16.16.136:8080/files/"+qr_url);
         btn_qr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 System.out.println(qr_url+"Tlqk");
-                generateQRCode("http://172.16.16.136:8080/files/"+qr_url);
+                if(flag==0){
+                    System.out.println("0ssook"+flag);
+                    photoView.setImageBitmap(bitmap_qr);
+                    btn_qr.setText("사진 보기");
+                    flag=1;
+                }
+                else if(flag==1){
+                    System.out.println("1ssook"+flag);
+                    bitmap_photo = BitmapFactory.decodeFile(getIntent().getStringExtra("key"));
+                    photoView.setImageBitmap(bitmap_photo);
+                    btn_qr.setText("QR코드 보기");
+                    flag=0;
+
+                }
+
             }
         });
      /*   Intent intent = getIntent();
@@ -66,28 +82,25 @@ public class PhotoActivity extends Activity implements PictureContract.View {
 //        photoView.setImageBitmap(image);
         qr_url=getIntent().getStringExtra("filename");
         if (getIntent() != null) {
-            image = BitmapFactory.decodeFile(getIntent().getStringExtra("key"));
-            photoView.setImageBitmap(image);
+            bitmap_photo = BitmapFactory.decodeFile(getIntent().getStringExtra("key"));
+            photoView.setImageBitmap(bitmap_photo);
 
-            String pictureFilePath = intent.getStringExtra("key");
-            File pictureFile = new File(pictureFilePath);
-            Bitmap bitmap2 = BitmapFactory.decodeFile(getIntent().getStringExtra("key"));
-            photoView.setImageBitmap(image);
-
+/*
             RequestBody imgFileReqBody = RequestBody.create(MediaType.parse("image/*"), pictureFile);
             MultipartBody.Part image2 = MultipartBody.Part.createFormData("files", pictureFile.getName(), imgFileReqBody);
             mSendPictureRepository = new SendPictureRepository(image2);
             mPicturePresenter = new PicturePresenter(mSendPictureRepository, this);
             mPicturePresenter.sendPictureDataToServer(image2);
 
+
+ */
         }
     }
 
     public void generateQRCode(String contents) {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         try {
-            Bitmap bitmap = toBitmap(qrCodeWriter.encode(contents, QR_CODE, 100, 100));
-            photoView.setImageBitmap(bitmap);
+            bitmap_qr = toBitmap(qrCodeWriter.encode("www.naver.com", QR_CODE, 100, 100));
         } catch (WriterException e) {
             e.printStackTrace();
         }

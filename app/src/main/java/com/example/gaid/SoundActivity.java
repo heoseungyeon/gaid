@@ -12,6 +12,7 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
     private TextToSpeech textToSpeech;
     private LottieAnimationView animationView;
     private TextView sttResultTextView;
+    private ImageButton ib_back;
     final int PERMISSION = 1;
     Intent intent;
     SpeechRecognizer mRecognizer;
@@ -31,6 +33,16 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sound);
+
+        ib_back=(ImageButton)findViewById(R.id.ib_back);
+        ib_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), DetectorActivity.class);
+                startActivity(intent);
+            }
+        });
+
         init();
         //Lottie Animation
         animationView = (LottieAnimationView) findViewById(R.id.animation_view);

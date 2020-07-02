@@ -51,7 +51,7 @@ class MyAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null)
             convertView = inf.inflate(layout, null);
-        convertView.setLayoutParams(new GridView.LayoutParams(200, 200));
+        convertView.setLayoutParams(new GridView.LayoutParams(160, 160));
 
         ImageView iv = (ImageView) convertView.findViewById(R.id.imageView1);
         TextView tv = (TextView) convertView.findViewById(R.id.textView1);
@@ -71,8 +71,15 @@ class MyAdapter extends BaseAdapter {
                     tv.setText("E");
 
                 }
+                if(i==39){
+                    iv.setImageResource(R.drawable.current);
+                }
+
                 if (node[i].getKind().equals("W")) {
                     iv.setImageResource(R.drawable.black);
+                }
+                if(i==51){
+                    iv.setImageResource(R.drawable.enter);
                 }
             }
         }
