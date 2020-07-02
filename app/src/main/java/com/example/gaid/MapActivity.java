@@ -40,6 +40,8 @@ import java.util.Locale;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
+import retrofit2.http.HEAD;
+
 public class MapActivity extends Activity implements TextToSpeech.OnInitListener {
     private TextView tv1;
     private ArrayList<Integer> paths;
@@ -75,6 +77,7 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
 
     private TextView floortext;
 
+    private Button btn_toinfo;
     private ImageButton ib_back;
     private int[] img;
 
@@ -96,6 +99,36 @@ public class MapActivity extends Activity implements TextToSpeech.OnInitListener
 
         setContentView(R.layout.map_1f);
         baseApplication = new BaseApplication();
+        textToSpeech = new TextToSpeech(this, this);
+        btn_toinfo=(Button)findViewById(R.id.btn_toinfo);
+        btn_toinfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent_in=new Intent(getApplicationContext(),InfoActivity.class);
+                intent_in.putExtra("no",goal);
+                startActivity(intent_in);
+            }
+        });
+        ib_back=(ImageButton)findViewById(R.id.ib_back);
+        ib_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+//        setContentView(R.layout.activity_map);
+//        System.out.println("맵액티비티");
+//        tv1=findViewById(R.id.node1);
+//
+//        allview=findViewById(R.id.allview);
+//        allview.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+        init();
 
         viewDialog = new ViewDialog(this);
 

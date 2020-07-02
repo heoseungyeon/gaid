@@ -23,6 +23,8 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"
         android:usesCleartextTraffic="true">
+        <activity android:name=".InfoActivity"
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name=".PhotoActivity"
             android:screenOrientation="landscape" />

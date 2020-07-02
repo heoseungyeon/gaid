@@ -191,6 +191,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 startActivity(intent);
             } else if (text.contains("소개")) {
                 speakOut("소개 해달라구요?");
+                Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+                intent.putExtra("text",text);
+                startActivity(intent);
+
             } else if (text.contains("사진")) {
                 speakOut("기념사진찍어드릴게요");
             }else if (text.contains("대양")) {
@@ -244,6 +248,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             temperature = (int)((temperature - 32) / 1.8);
             String weatherType = weatherType(weather);
             tv_weather.setText(weatherType);
+            System.out.println(weatherType+temperature+"ssook!!");
             tv_temperature.setText(Double.toString(temperature));
 
         }

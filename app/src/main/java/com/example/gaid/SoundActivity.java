@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -26,6 +27,10 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
     private LottieAnimationView animationView;
     private TextView sttResultTextView;
     private ImageButton ib_back;
+    private int count = 20;
+    private CountDownTimer countDownTimer;
+    private static final int MILLISINFUTURE = 20 * 1000;
+    private static final int COUNT_DOWN_INTERVAL = 1000;
 
     final int PERMISSION = 1;
     Intent intent;
@@ -58,6 +63,9 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
         });
         //Lottie Animation start
         animationView.playAnimation();
+        countDownTimer();
+        countDownTimer.start();
+
     }
 
     public void init()
@@ -213,4 +221,26 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
             Log.e("TTS", "Initilization Failed");
         }
     }
+
+    public void countDownTimer() {
+
+        countDownTimer = new CountDownTimer(MILLISINFUTURE, COUNT_DOWN_INTERVAL) {
+            public void onTick(long millisUntilFinished) {
+                count--;
+                if (count == 0) {
+                    Intent intent = new Intent(getApplicationContext(), DetectorActivity.class);
+                    startActivity(intent);
+                }
+                System.out.println(count + "ssssssss");
+            }
+
+            public void onFinish() {
+                System.out.println("ssss");
+//                Intent intent = new Intent(getApplicationContext(), DetectorActivity.class);
+//                startActivity(intent);
+            }
+        };
+    }
+
+
 }
