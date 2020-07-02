@@ -53,11 +53,11 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
             @Override
             public void onClick(View view) {
                 animationView.playAnimation();
-                mRecognizer.startListening(intent);
             }
         });
         //Lottie Animation start
         animationView.playAnimation();
+        mRecognizer.startListening(intent);
     }
 
     public void init()
@@ -165,7 +165,7 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
                 speakOut("길찾기기능을 찾으셨군요");
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                 startActivity(intent);
-            } else if (text.contains("소개")) {
+            } else if (text.contains("소개")||text.contains("소계")||text.contains("속의")) {
                 speakOut("소개 해달라구요?");
             } else if (text.contains("사진")) {
                 speakOut("기념사진찍어드릴게요");
@@ -177,6 +177,8 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
                 startActivity(intent);
             } else {
                 speakOut("다시 한번 말해주세요");
+                mRecognizer.startListening(intent);
+
             }
         }
 

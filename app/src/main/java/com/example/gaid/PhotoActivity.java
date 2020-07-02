@@ -61,7 +61,8 @@ public class PhotoActivity extends Activity implements PictureContract.View {
         btn_qr = (Button) findViewById(R.id.btn_qr);
 
         generateQRCode("www.naver.com");
-        //generateQRCode("http://172.16.16.136:8080/files/"+qr_url);
+        //generateQRCode("http://172.16.16.136:8080/viewImage/"+qr_url);
+        //http://172.16.16.136:8080/viewImage/n123213411
         btn_qr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
