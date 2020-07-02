@@ -389,13 +389,13 @@ public abstract class CameraActivity extends Activity
     try {
       for (final String cameraId : manager.getCameraIdList()) {
         final CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
-
+        System.out.println("ididididid"+cameraId);
         // We don't use a front facing camera in this sample.
+        //final Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
         final Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
-        if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
+        if (facing != null && facing == CameraCharacteristics.LENS_FACING_BACK) {
           continue;
         }
-
 
         final StreamConfigurationMap map =
             characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
@@ -544,6 +544,7 @@ System.out.println("ektl");
       String weatherType = weatherType(weather);
       tv_weather.setText(weatherType);
       tv_temperature.setText(Double.toString(temperature));
+      tv_temperature.append("도");
       System.out.println(weatherType+temperature+"ssook!!");
 
     }
