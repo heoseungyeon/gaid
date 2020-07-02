@@ -396,7 +396,7 @@ private ImageView imgWeather;
         // We don't use a front facing camera in this sample.
         //final Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
         final Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
-        if (facing != null && facing == CameraCharacteristics.LENS_FACING_BACK) {
+        if (facing != null && facing == CameraCharacteristics.LENS_FACING_EXTERNAL) {
           continue;
         }
 
@@ -411,9 +411,11 @@ private ImageView imgWeather;
         // This should help with legacy situations where using the camera2 API causes
         // distorted or otherwise broken previews.
         useCamera2API = (facing == CameraCharacteristics.LENS_FACING_EXTERNAL)
-            || isHardwareLevelSupported(characteristics, 
+            || isHardwareLevelSupported(characteristics,
                                         CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
         LOGGER.i("Camera API lv2?: %s", useCamera2API);
+        System.out.println("adfa"+cameraId);
+
         return cameraId;
       }
     } catch (CameraAccessException e) {
@@ -425,6 +427,7 @@ private ImageView imgWeather;
 
   protected void setFragment() {
     String cameraId = chooseCamera();
+
     if (cameraId == null) {
       Toast.makeText(this, "No Camera Detected", Toast.LENGTH_SHORT).show();
       finish();

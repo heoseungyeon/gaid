@@ -65,7 +65,7 @@
         android:layout_height="100dp"
         android:layout_marginTop="50dp"
         android:format12Hour="yy/MM/dd hh:mm"
-        android:format24Hour="HH:mm"
+        android:format24Hour="yy/MM/dd HH:mm"
         android:textSize="20sp"
 
         app:layout_constraintRight_toRightOf="@id/tv_main"
