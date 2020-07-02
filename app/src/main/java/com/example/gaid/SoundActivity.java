@@ -167,6 +167,9 @@ public class SoundActivity extends Activity implements TextToSpeech.OnInitListen
                 startActivity(intent);
             } else if (text.contains("소개")||text.contains("소계")||text.contains("속의")) {
                 speakOut("소개 해달라구요?");
+                Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+                startActivity(intent);
+
             } else if (text.contains("사진")) {
                 speakOut("기념사진찍어드릴게요");
                 Intent intent = new Intent(getApplicationContext(), TakepictureActivity.class);

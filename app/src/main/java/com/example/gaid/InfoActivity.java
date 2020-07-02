@@ -2,12 +2,13 @@ package com.example.gaid;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class InfoActivity extends AppCompatActivity {
+public class InfoActivity extends Activity {
     private ImageView imgview;
     private TextView tv_profname,tv_etc,tv_tel,tv_dept;
     private Intent intent;
